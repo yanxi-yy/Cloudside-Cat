@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《我减掉了五十斤》心理减肥法</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-base: #ddd8cf;
+      --bg-elevated: #f0ebe3;
+      --bg-card: #faf7f2;
+      --bg-hover: #f2ece4;
+      --border: rgba(92, 82, 68, 0.2);
+      --border-subtle: rgba(92, 82, 68, 0.1);
+      --text-primary: #3a3530;
+      --text-secondary: #5e5850;
+      --text-tertiary: #8a8278;
+      --accent: #8b7355;
+      --accent-soft: rgba(139, 115, 85, 0.12);
+      --accent-muted: #9a8062;
+      --blue: #6b8494;
+      --blue-soft: rgba(107, 132, 148, 0.14);
+      --teal: #6b8f7a;
+      --teal-soft: rgba(107, 143, 122, 0.14);
+      --coral: #a87868;
+      --coral-soft: rgba(168, 120, 104, 0.14);
+      --lavender: #8a7f96;
+      --lavender-soft: rgba(138, 127, 150, 0.14);
+      --paper-shadow: rgba(58, 53, 48, 0.08);
+      --radius-sm: 4px;
+      --radius: 8px;
+      --radius-lg: 12px;
+      --transition: 0.22s ease;
+      --max-width: 920px;
+      --font-serif: "Noto Serif SC", Georgia, serif;
+      --font-sans: "Noto Sans SC", system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      padding: 32px 16px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"),
+        linear-gradient(165deg, #e8e3da 0%, #d8d2c8 45%, #cfc9bf 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(250, 247, 242, 0.5), transparent 70%),
+        radial-gradient(ellipse 50% 40% at 100% 100%, rgba(139, 115, 85, 0.04), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 48px 36px 100px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow:
+        0 1px 2px var(--paper-shadow),
+        0 12px 40px rgba(58, 53, 48, 0.06);
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      margin: -12px -8px 36px;
+      padding: 12px 8px;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+    .nav-inner {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-link {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 20px;
+      transition: color var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+    .nav-link:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .hero {
+      margin-bottom: 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .hero-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(26px, 5vw, 34px);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .hero .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      max-width: 560px;
+    }
+
+    .callout {
+      position: relative;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent-muted);
+      padding: 20px 24px 20px 28px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 32px;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--text-primary);
+    }
+    .callout::before {
+      content: "\201C";
+      position: absolute;
+      left: 12px;
+      top: 8px;
+      font-size: 36px;
+      color: var(--accent-muted);
+      opacity: 0.35;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .stat {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 20px 16px;
+      text-align: center;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .stat:hover {
+      background: var(--bg-hover);
+      border-color: var(--border);
+    }
+    .stat:hover::before { opacity: 1; }
+    .stat:nth-child(2)::before { background: var(--blue); }
+    .stat:nth-child(3)::before { background: var(--teal); }
+    .stat:nth-child(4)::before { background: var(--coral); }
+    .stat-value {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .stat:nth-child(2) .stat-value { color: var(--blue); }
+    .stat:nth-child(3) .stat-value { color: var(--teal); }
+    .stat:nth-child(4) .stat-value { color: var(--coral); }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .section {
+      margin-bottom: 48px;
+      scroll-margin-top: 72px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .section-num {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    h3 {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 18px;
+      margin-top: -8px;
+    }
+
+    .author-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+    }
+    .author-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .author-title {
+      font-size: 13px;
+      color: var(--accent-muted);
+      margin-bottom: 12px;
+    }
+    .author-bio {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+    .author-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .author-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .concept-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 18px 16px;
+      text-align: center;
+      transition: border-color var(--transition);
+    }
+    .concept-item:hover { border-color: var(--border); }
+    .concept-icon {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .concept-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .concept-desc {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .prose {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+    .prose p { margin-bottom: 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose strong { color: var(--text-primary); font-weight: 600; }
+
+    .table-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 12px 18px;
+      text-align: left;
+    }
+    th {
+      background: rgba(139, 115, 85, 0.06);
+      color: var(--text-tertiary);
+      font-weight: 500;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background var(--transition);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-hover); }
+    td:first-child {
+      color: var(--accent-muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .card:hover { border-color: var(--border); }
+    .card-header {
+      padding: 16px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: rgba(139, 115, 85, 0.06);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-header-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .card-body { padding: 18px 20px; }
+
+    .flow-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px;
+      overflow-x: auto;
+    }
+    .flow-wrap svg { display: block; margin: 0 auto; min-width: 720px; }
+    .caption {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .steps { list-style: none; }
+    .steps li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px;
+      margin-bottom: 6px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: background var(--transition), color var(--transition);
+    }
+    .steps li:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    .steps li:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .steps li:nth-child(1) .step-num { background: var(--blue-soft); color: var(--blue); }
+    .steps li:nth-child(2) .step-num { background: var(--lavender-soft); color: var(--lavender); }
+    .steps li:nth-child(3) .step-num { background: var(--accent-soft); color: var(--accent); }
+    .steps li:nth-child(4) .step-num { background: var(--teal-soft); color: var(--teal); }
+    .steps li:nth-child(5) .step-num { background: var(--coral-soft); color: var(--coral); }
+
+    .cases-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .case-item { border-bottom: 1px solid var(--border-subtle); }
+    .case-item:last-child { border-bottom: none; }
+    .case-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background var(--transition);
+    }
+    .case-header:hover { background: var(--bg-hover); }
+    .case-chevron {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--text-tertiary);
+      transition: transform var(--transition), color var(--transition);
+    }
+    .case-item.open .case-chevron {
+      transform: rotate(90deg);
+      color: var(--accent);
+    }
+    .case-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .case-icon.blue { background: var(--blue-soft); color: var(--blue); }
+    .case-icon.green { background: var(--teal-soft); color: var(--teal); }
+    .case-icon.purple { background: var(--lavender-soft); color: var(--lavender); }
+    .case-icon.orange { background: var(--coral-soft); color: var(--coral); }
+    .case-title { flex: 1; }
+    .case-tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+    .case-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 20px;
+    }
+    .case-item.open .case-body {
+      max-height: 400px;
+      padding: 0 20px 20px 62px;
+    }
+    .case-body p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+      margin-bottom: 10px;
+      padding-left: 14px;
+      border-left: 2px solid var(--border-subtle);
+    }
+    .case-body p:last-child { margin-bottom: 0; }
+    .case-body strong {
+      color: var(--accent-muted);
+      font-weight: 600;
+    }
+    .case-body .result {
+      border-left-color: var(--teal);
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    .insight-card {
+      padding: 22px 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .insight-card:hover {
+      border-color: var(--border);
+      transform: translateY(-2px);
+    }
+    .insight-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .insight-card h3::before {
+      content: "";
+      width: 4px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .insight-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+    }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .back-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--accent-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition), visibility var(--transition), background var(--transition);
+      z-index: 200;
+      box-shadow: 0 2px 12px var(--paper-shadow);
+    }
+    .back-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .back-top:hover {
+      background: var(--accent-soft);
+    }
+
+    @media (max-width: 720px) {
+      .page { padding: 32px 20px 80px; margin: 0 8px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr; }
+      .author-card { grid-template-columns: 1fr; text-align: center; }
+      .author-avatar { margin: 0 auto; }
+      .author-tags { justify-content: center; }
+      .nav { margin-left: -4px; margin-right: -4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <nav class="nav" aria-label="页面导航">
+      <div class="nav-inner">
+        <a class="nav-link" href="#overview">概览</a>
+        <a class="nav-link" href="#author">作者介绍</a>
+        <a class="nav-link" href="#concepts">核心观点</a>
+        <a class="nav-link" href="#secrets">心理秘诀</a>
+        <a class="nav-link" href="#flow">减肥流程</a>
+        <a class="nav-link" href="#cases">真实案例</a>
+        <a class="nav-link" href="#insights">关键洞察</a>
+      </div>
+    </nav>
+
+    <header class="hero" id="overview">
+      <span class="hero-badge">心灵成长 · 体重管理</span>
+      <h1>《我减掉了五十斤》心理减肥法</h1>
+      <p class="subtitle">心理咨询师徐徐亲身实践，从心灵到身体的完整蜕变之旅</p>
+    </header>
+
+    <blockquote class="callout">
+      你如果总是吃进去超过你需要的食物，那这个食物就不是你的胃需要，而是你的心需要。而我们的心是不需要食物的，它需要爱，需要包容，需要接纳。
+    </blockquote>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">50</div>
+        <div class="stat-label">减掉的斤数</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">10</div>
+        <div class="stat-label">年实践历程</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">5</div>
+        <div class="stat-label">心理秘诀</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">4</div>
+        <div class="stat-label">真实案例</div>
+      </div>
+    </div>
+
+    <section class="section" id="author">
+      <div class="section-header">
+        <span class="section-num">1</span>
+        <h2>作者介绍</h2>
+      </div>
+      <div class="author-card">
+        <div class="author-avatar">徐</div>
+        <div>
+          <div class="author-name">徐徐</div>
+          <div class="author-title">心理咨询师 · 女性成长培训师</div>
+          <p class="author-bio">
+            徐徐，资深心理咨询师，专注于女性成长与心理健康领域。身高1米58的她，从150多斤减至不到100斤，整个过程持续了10年时间。这段亲身经历让她深刻认识到：<strong>真正的减肥不是与脂肪对抗，而是与内心的恐惧正面开战</strong>。2017年，她将这段心路历程与心理方法整理成书，由漓江出版社出版，帮助无数读者通过心灵成长实现健康体重管理。
+          </p>
+          <div class="author-tags">
+            <span class="author-tag">心理咨询师</span>
+            <span class="author-tag">女性成长导师</span>
+            <span class="author-tag">心理减肥法实践者</span>
+            <span class="author-tag">《我减掉了五十斤》作者</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="concepts">
+      <div class="section-header">
+        <span class="section-num">2</span>
+        <h2>五大核心观点</h2>
+      </div>
+      <p class="section-desc">理解这些观点，是开始心理减肥之旅的第一步</p>
+
+      <div class="concept-grid">
+        <div class="concept-item">
+          <div class="concept-icon">爱</div>
+          <div class="concept-label">肥胖可能源于缺爱</div>
+          <p class="concept-desc">多吃的食物填补的是未被满足的爱的需要</p>
+        </div>
+        <div class="concept-item">
+          <div class="concept-icon">管</div>
+          <div class="concept-label">从减肥到体重管理</div>
+          <p class="concept-desc">这是一辈子的事，而非一阵子的事</p>
+        </div>
+        <div class="concept-item">
+          <div class="concept-icon">纳</div>
+          <div class="concept-label">自我接纳是起点</div>
+          <p class="concept-desc">接纳自己的情绪和感受，减少内心冲突</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:18px;">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-header-dot" style="background:var(--blue)"></span>
+            分清责任边界
+          </div>
+          <div class="card-body">
+            <div class="prose">
+              <p>人生在世三件事：<strong>自己的事、别人的事、上帝的事</strong>。</p>
+              <p>我们的很多烦恼就是因为分不清到底是谁的事。为上帝的事忧愁，为别人的事操心，却疏忽了自己的事。</p>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-header-dot" style="background:var(--teal)"></span>
+            从接受到享受
+          </div>
+          <div class="card-body">
+            <div class="prose">
+              <p>内心一丝一毫的委屈和不甘都会成为「复辟叛军」的「卧底」。</p>
+              <p>对于体重管理这样的百年大计，只有「接受」这个态度远远不够，需要升级到「享受」。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="secrets">
+      <div class="section-header">
+        <span class="section-num">3</span>
+        <h2>五个心理秘诀</h2>
+      </div>
+      <p class="section-desc">作者亲身实践验证的有效方法</p>
+
+      <div class="card">
+        <div class="card-body" style="padding:0;">
+          <ol class="steps" style="padding:10px 0;">
+            <li><span class="step-num">1</span><span><strong>重新建立与食物的关系</strong>：关注每天必须吃、应该吃的东西，先把这些吃好，而不是只想着不能吃什么</span></li>
+            <li><span class="step-num">2</span><span><strong>战胜黄昏焦虑</strong>：在黄昏压力激素减少时，主动体会情绪，用意志力替代本能的进食冲动</span></li>
+            <li><span class="step-num">3</span><span><strong>建立健康的饮食习惯</strong>：早午餐正常饮食，晚餐提前到下午5点之前，尽量清淡，控制总热量摄入</span></li>
+            <li><span class="step-num">4</span><span><strong>训练意志力肌肉</strong>：通过有意识的训练，增强自控力，让节制成为值得骄傲的事</span></li>
+            <li><span class="step-num">5</span><span><strong>处理内心创伤</strong>：面对和疗愈过去的伤痛，打破原生家庭的负面影响，为自己负责</span></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="flow">
+      <div class="section-header">
+        <span class="section-num">4</span>
+        <h2>心理减肥流程</h2>
+      </div>
+      <p class="section-desc">从自我觉察到享受过程的完整蜕变路径</p>
+      <div class="flow-wrap">
+        <svg id="flowChart" viewBox="0 0 800 100" role="img" aria-label="心理减肥流程图"></svg>
+      </div>
+      <p class="caption">来源：徐徐《我减掉了五十斤》核心蜕变路径</p>
+    </section>
+
+    <section class="section" id="cases">
+      <div class="section-header">
+        <span class="section-num">5</span>
+        <h2>真实案例</h2>
+      </div>
+      <p class="section-desc">点击展开查看心理减肥法的实际应用</p>
+      <div class="cases-card" id="casesList"></div>
+    </section>
+
+    <section class="section" id="insights">
+      <div class="section-header">
+        <span class="section-num">6</span>
+        <h2>关键洞察</h2>
+      </div>
+      <div class="grid-2">
+        <div class="insight-card">
+          <h3>和人生中的很多事一样</h3>
+          <p>我们错就错在把「一辈子」的事当成了「一阵子」的事。减肥如此，经营婚姻如此，看书学习也是如此。短期内快速减肥是一个诱惑，也是一个陷阱。</p>
+        </div>
+        <div class="insight-card">
+          <h3>节食减肥的问题</h3>
+          <p>节食减肥常常出现问题的原因不是方向错了，而是速度太快。很多有体重问题的女性都存在一个导致她们发胖的心理因素：分不清自己的责任和别人的责任。</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      分析基于徐徐《我减掉了五十斤！心理咨询师亲身实践的心理减肥法》（漓江出版社，2017）整理
+    </footer>
+  </div>
+
+  <button class="back-top" id="backTop" aria-label="回到顶部">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <script>
+    const palette = {
+      accent: "#8b7355",
+      blue: "#6b8494",
+      teal: "#6b8f7a",
+      coral: "#a87868",
+      lavender: "#8a7f96",
+      surface: "#faf7f2",
+      surfaceHover: "#f2ece4",
+      border: "#d5cec4",
+      text: "#3a3530",
+      textMuted: "#5e5850",
+      textDim: "#8a8278",
+      grid: "#e8e2d9"
+    };
+
+    const flowNodes = [
+      { label: "自我觉察", highlight: false },
+      { label: "找到缺口", highlight: false },
+      { label: "自我接纳", highlight: true },
+      { label: "开始行动", highlight: false },
+      { label: "建立习惯", highlight: false },
+      { label: "体重管理", highlight: false },
+      { label: "享受过程", highlight: false }
+    ];
+
+    function renderFlowChart() {
+      const svg = document.getElementById("flowChart");
+      const nodeWidth = 96;
+      const nodeHeight = 44;
+      const gap = 14;
+      const arrowGap = 20;
+      const totalWidth = flowNodes.length * nodeWidth + (flowNodes.length - 1) * arrowGap;
+      const startX = (800 - totalWidth) / 2;
+      const centerY = 50;
+      let content = "";
+
+      flowNodes.forEach((node, index) => {
+        const x = startX + index * (nodeWidth + arrowGap);
+        const y = centerY - nodeHeight / 2;
+        const fill = node.highlight ? "#ebe3d6" : palette.surface;
+        const stroke = node.highlight ? palette.accent : palette.border;
+        const textFill = node.highlight ? palette.accent : palette.text;
+
+        content += `<rect x="${x}" y="${y}" width="${nodeWidth}" height="${nodeHeight}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="${node.highlight ? 1.5 : 1}"/>`;
+        content += `<text x="${x + nodeWidth / 2}" y="${centerY + 5}" text-anchor="middle" fill="${textFill}" font-size="11" font-weight="${node.highlight ? 600 : 400}">${node.label}</text>`;
+
+        if (index < flowNodes.length - 1) {
+          const arrowX = x + nodeWidth + 4;
+          content += `<line x1="${arrowX}" y1="${centerY}" x2="${arrowX + arrowGap - 8}" y2="${centerY}" stroke="${palette.border}" stroke-width="1.5"/>`;
+          content += `<polygon points="${arrowX + arrowGap - 8},${centerY - 4} ${arrowX + arrowGap},${centerY} ${arrowX + arrowGap - 8},${centerY + 4}" fill="${palette.textDim}"/>`;
+        }
+      });
+
+      svg.innerHTML = content;
+    }
+
+    const cases = [
+      {
+        title: "瑞秋：把伤痛和脂肪一起卸下",
+        tag: "心灵疗愈",
+        icon: "blue",
+        abbr: "R",
+        content: [
+          { label: "问题根源", text: "过去的创伤经历导致情绪性进食，用食物填补内心的空缺。" },
+          { label: "心理方法", text: "通过心理咨询面对过去的伤痛，学会用非食物的方式处理情绪。" },
+          { label: "结果", text: "成功减重的同时，获得了内心的平静与自我接纳。", result: true }
+        ]
+      },
+      {
+        title: "大刚：原谅父亲，远离水果罐头",
+        tag: "原生家庭",
+        icon: "green",
+        abbr: "D",
+        content: [
+          { label: "问题根源", text: "与父亲的关系问题导致情绪困扰，用水果罐头作为慰藉。" },
+          { label: "心理方法", text: "通过心理疗愈，学会原谅和理解，解开了心结。" },
+          { label: "结果", text: "不再依赖食物慰藉，体重自然下降，重获健康生活。", result: true }
+        ]
+      },
+      {
+        title: "彤彤：减肥助力考过英语六级",
+        tag: "学业提升",
+        icon: "purple",
+        abbr: "T",
+        content: [
+          { label: "问题根源", text: "缺乏自信和专注力，用食物缓解学习压力。" },
+          { label: "心理方法", text: "体重管理过程中建立的自律和自信迁移到学习中。" },
+          { label: "结果", text: "不仅体重改善，专注力和自信心都显著提升，成功通过英语六级。", result: true }
+        ]
+      },
+      {
+        title: "要总：成功不需要大肚子",
+        tag: "职场形象",
+        icon: "orange",
+        abbr: "Y",
+        content: [
+          { label: "问题根源", text: "认为职场成功者需要有「肚子」，用应酬作为借口放任体重。" },
+          { label: "心理方法", text: "打破刻板印象，认识到健康形象反而更有利于职业发展。" },
+          { label: "结果", text: "改变形象后事业反而更加成功，健康与事业兼得。", result: true }
+        ]
+      }
+    ];
+
+    const casesList = document.getElementById("casesList");
+    cases.forEach((caseItem, index) => {
+      const item = document.createElement("div");
+      item.className = "case-item" + (index === 0 ? " open" : "");
+      item.innerHTML = `
+        <div class="case-header">
+          <svg class="case-chevron" viewBox="0 0 16 16" fill="currentColor"><path d="M6 4l4 4-4 4"/></svg>
+          <span class="case-icon ${caseItem.icon}">${caseItem.abbr}</span>
+          <span class="case-title">${caseItem.title}</span>
+          <span class="case-tag">${caseItem.tag}</span>
+        </div>
+        <div class="case-body">
+          ${caseItem.content.map(part =>
+            `<p class="${part.result ? "result" : ""}"><strong>${part.label}：</strong>${part.text}</p>`
+          ).join("")}
+        </div>
+      `;
+      item.querySelector(".case-header").addEventListener("click", () => {
+        const isOpen = item.classList.contains("open");
+        document.querySelectorAll(".case-item.open").forEach(el => el.classList.remove("open"));
+        if (!isOpen) item.classList.add("open");
+      });
+      casesList.appendChild(item);
+    });
+
+    renderFlowChart();
+
+    const backTop = document.getElementById("backTop");
+    window.addEventListener("scroll", () => {
+      backTop.classList.toggle("visible", window.scrollY > 400);
+    });
+    backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        const target = document.querySelector(link.getAttribute("href"));
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🏆 世界杯投票</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(180deg, #006633 0%, #009933 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 手机容器 */
+    .phone-container {
+      width: 100%;
+      max-width: 375px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #006633 0%, #009933 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 草坪纹理 */
+    .field-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        repeating-linear-gradient(
+          0deg,
+          #006633 0px,
+          #006633 18px,
+          #009933 18px,
+          #009933 36px
+        );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 足球场标线 */
+    .field-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(255,255,255,0.08) 50%, transparent 50%),
+        radial-gradient(ellipse at 50% 85%, rgba(255,255,255,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* 彩带动画 */
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      animation: confettiFall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* 浮动足球 */
+    .floating-soccer {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle at 30% 30%, white 0%, white 30%, black 30%, black 40%, white 40%, white 55%, black 55%, black 65%, white 65%, white 80%, black 80%, black 100%);
+      border-radius: 50%;
+      animation: floatSoccer 4s ease-in-out infinite;
+      opacity: 0.7;
+      z-index: 3;
+    }
+
+    @keyframes floatSoccer {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* 顶部状态栏 */
+    .status-bar {
+      height: 44px;
+      background: rgba(0, 102, 51, 0.9);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .status-bar .time {
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    /* 导航栏 */
+    .nav-bar {
+      background: rgba(0, 102, 51, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 44px;
+      z-index: 99;
+    }
+
+    .nav-bar h1 {
+      color: #ffcc00;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* 底部Tab导航 */
+    .bottom-tabs {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 102, 51, 0.95);
+      backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 2px solid #ffcc00;
+      z-index: 100;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      transition: all 0.3s ease;
+      padding: 4px 16px;
+      border-radius: 16px;
+    }
+
+    .tab-item.active {
+      color: #ffcc00;
+      background: rgba(255, 204, 0, 0.1);
+    }
+
+    .tab-item span:first-child {
+      font-size: 22px;
+    }
+
+    /* Tab内容区域 */
+    .tab-content {
+      padding: 110px 16px 80px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ============ 观赛指南页面 - 参考图片布局 ============ */
+    .guide-hero-new {
+      background: linear-gradient(135deg, #006633 0%, #009933 100%);
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .trophy-emoji {
+      font-size: 56px;
+      animation: trophyFloat 3s ease-in-out infinite;
+    }
+
+    .soccer-emoji {
+      font-size: 44px;
+      animation: soccerFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes trophyFloat {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50% { transform: translateY(-8px) rotate(5deg); }
+    }
+
+    @keyframes soccerFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(180deg); }
+    }
+
+    .hero-title-main, .hero-title-sub {
+      font-size: 34px;
+      font-weight: 900;
+      color: white;
+      text-shadow: 3px 3px 0 #004d26, -1px -1px 0 rgba(255,255,255,0.3);
+      margin: 8px 0;
+      letter-spacing: 2px;
+    }
+
+    .stats-banner {
+      display: inline-block;
+      background: linear-gradient(90deg, #ff6600, #ff9900);
+      color: white;
+      font-weight: 800;
+      font-size: 15px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      margin: 12px 0;
+      box-shadow: 0 4px 12px rgba(255, 102, 0, 0.4);
+    }
+
+    .hero-info {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .fifa-tag {
+      color: #ffcc00;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .record-tag {
+      background: linear-gradient(90deg, #ff6600, #ffcc00);
+      color: #006633;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 6px;
+    }
+
+    /* 区块卡片 */
+    .section-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 0 0 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      background: linear-gradient(90deg, #00cc33, #00ff66);
+      padding: 8px 16px;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      bottom: -8px;
+      width: 0;
+      height: 0;
+      border-top: 8px solid #00cc33;
+      border-right: 8px solid transparent;
+    }
+
+    .section-label {
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    }
+
+    /* 时间内容 */
+    .time-content {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .time-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .time-label {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 8px;
+      padding: 4px 0;
+      position: relative;
+    }
+
+    .time-label::before, .time-label::after {
+      content: '—';
+      color: #00cc33;
+      margin: 0 8px;
+    }
+
+    .time-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #006633;
+    }
+
+    .time-divider {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(180deg, #00cc33, transparent);
+    }
+
+    /* 点列表 */
+    .point-list {
+      list-style: none;
+      padding: 0 16px;
+    }
+
+    .point-item {
+      padding: 10px 0;
+      color: #333;
+      font-size: 14px;
+      line-height: 1.6;
+      border-bottom: 1px dashed rgba(0, 102, 51, 0.2);
+    }
+
+    .point-item:last-child {
+      border-bottom: none;
+    }
+
+    .point-item strong {
+      color: #006633;
+    }
+
+    /* 底部号召 */
+    .callout-bottom {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .callout-emoji {
+      font-size: 28px;
+      margin-right: 8px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    .callout-text {
+      color: #333;
+      font-weight: 600;
+      font-size: 15px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .callout-action {
+      color: #006633;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* 统计数据卡片（备用） */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffcc00;
+      text-shadow: 2px 2px 0 rgba(0, 102, 51, 0.5);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 13px;
+    }
+
+    /* 时间轴卡片 */
+    .timeline-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6600, #ffcc00);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-title .icon {
+      background: linear-gradient(135deg, #00cc33, #009933);
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .card-title h3 {
+      color: #006633;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .timeline-content {
+      display: flex;
+      justify-content: space-around;
+      padding: 16px 0;
+      background: rgba(0, 153, 51, 0.05);
+      border-radius: 12px;
+    }
+
+    .timeline-item {
+      text-align: center;
+    }
+
+    .timeline-item .line {
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(180deg, #ffcc00, #ff6600);
+      margin: 0 auto 8px;
+    }
+
+    .timeline-item .label {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .timeline-item .value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #006633;
+    }
+
+    /* 看点卡片 */
+    .highlights-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .highlight-list {
+      list-style: none;
+    }
+
+    .highlight-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px dashed rgba(0, 102, 51, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .highlight-item:last-child {
+      border-bottom: none;
+    }
+
+    .highlight-item:hover {
+      background: rgba(0, 153, 51, 0.05);
+      margin: 0 -20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+    }
+
+    .highlight-icon {
+      background: linear-gradient(135deg, #ff6600, #ffcc00);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #006633;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .highlight-text {
+      color: #333;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .highlight-text strong {
+      color: #006633;
+    }
+
+    /* 赛制卡片 */
+    .format-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .format-card li {
+      padding: 10px 0;
+      padding-left: 24px;
+      position: relative;
+      color: #333;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .format-card li::before {
+      content: '⚽';
+      position: absolute;
+      left: 0;
+    }
+
+    /* 底部号召 */
+    .call-to-action {
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.2), rgba(255, 102, 0, 0.1));
+      border: 2px solid #ffcc00;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      animation: ctaPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes ctaPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(255, 204, 0, 0.6); }
+    }
+
+    .call-to-action p {
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .call-to-action .emoji {
+      font-size: 24px;
+      animation: wave 1s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* ============ 排行榜页面 ============ */
+    .ranking-header {
+      background: rgba(255, 204, 0, 0.2);
+      border: 2px solid #ffcc00;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .ranking-header .label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .ranking-header .count {
+      font-size: 36px;
+      font-weight: 900;
+      color: #ffcc00;
+      text-shadow: 2px 2px 0 rgba(0, 102, 51, 0.5);
+    }
+
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .ranking-item.top3 {
+      background: rgba(255, 204, 0, 0.15);
+      border: 2px solid #ffcc00;
+    }
+
+    .rank {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      margin-right: 12px;
+    }
+
+    .rank.gold {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #006633;
+      box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+    }
+
+    .rank.silver {
+      background: linear-gradient(135deg, #e8e8e8, #a8a8a8);
+      color: #006633;
+    }
+
+    .rank.bronze {
+      background: linear-gradient(135deg, #cd7f32, #b87333);
+      color: white;
+    }
+
+    .rank.other {
+      background: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .team-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-right: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-info {
+      flex: 1;
+    }
+
+    .team-name {
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .team-votes {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+    }
+
+    /* ============ 球队介绍页面 ============ */
+    .team-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 102, 51, 0.1);
+    }
+
+    .team-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .team-card .team-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .team-card .team-icon-large {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-right: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-card .team-title {
+      flex: 1;
+    }
+
+    .team-card .team-title h3 {
+      color: #006633;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .team-card .team-title .rank-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffcc00, #ff8c00);
+      color: #006633;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .team-card .team-details {
+      background: rgba(0, 102, 51, 0.05);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .team-card .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(0, 102, 51, 0.2);
+    }
+
+    .team-card .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .team-card .detail-label {
+      color: #666;
+      font-size: 13px;
+    }
+
+    .team-card .detail-value {
+      color: #006633;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .team-card .team-desc {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .vote-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ffcc00, #ff8c00);
+      color: #006633;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 16px rgba(255, 204, 0, 0.4);
+    }
+
+    .vote-btn:hover:not(.disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(255, 204, 0, 0.5);
+    }
+
+    .vote-btn.disabled {
+      background: #ccc;
+      color: #999;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* 提示弹窗 */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 16px;
+      font-size: 16px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* 滚动条隐藏 */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-container">
+    <!-- 背景效果 -->
+    <div class="field-bg"></div>
+    <div class="field-lines"></div>
+    
+    <!-- 彩带 -->
+    <div class="confetti-container">
+      <div class="confetti" style="left: 10%; animation-duration: 8s;"></div>
+      <div class="confetti" style="left: 25%; animation-duration: 10s; animation-delay: 1s;"></div>
+      <div class="confetti" style="left: 40%; animation-duration: 7s; animation-delay: 2s;"></div>
+      <div class="confetti" style="left: 55%; animation-duration: 9s; animation-delay: 3s;"></div>
+      <div class="confetti" style="left: 70%; animation-duration: 8s; animation-delay: 0.5s;"></div>
+      <div class="confetti" style="left: 85%; animation-duration: 11s; animation-delay: 1.5s;"></div>
+    </div>
+
+    <!-- 浮动足球 -->
+    <div class="floating-soccer" style="top: 15%; right: 15%;"></div>
+    <div class="floating-soccer" style="top: 55%; left: 10%; width: 28px; height: 28px; animation-delay: 2s;"></div>
+
+    <!-- 顶部状态栏 -->
+    <div class="status-bar">
+      <div class="time" id="currentTime">14:30</div>
+      <div>📶 🔋</div>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="nav-bar">
+      <h1>🏆 世界杯投票</h1>
+      <span>⚽</span>
+    </div>
+
+    <!-- Tab内容区域 -->
+    <div class="tab-content">
+      <!-- Tab 1: 观赛指南 -->
+      <div id="tab1" class="active-tab">
+        <!-- 英雄区 -->
+        <div class="guide-hero-new">
+          <div class="hero-top">
+            <span class="trophy-emoji">🏆</span>
+            <span class="soccer-emoji">⚽</span>
+          </div>
+          <h2 class="hero-title-main">最强世界杯</h2>
+          <h2 class="hero-title-sub">观赛指南</h2>
+          <div class="stats-banner">48队 × 3国 × 104场 × 39天</div>
+          <div class="hero-info">
+            <span class="fifa-tag">2026FIFA</span>
+            <span class="record-tag">史上规模最大的一届</span>
+          </div>
+        </div>
+
+        <!-- 时间卡片 -->
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-label">时间</span>
+          </div>
+          <div class="time-content">
+            <div class="time-item">
+              <div class="time-label">揭幕</div>
+              <div class="time-value">6月12日</div>
+            </div>
+            <div class="time-divider"></div>
+            <div class="time-item">
+              <div class="time-label">决战</div>
+              <div class="time-value">7月19日</div>
+            </div>
+            <div class="time-divider"></div>
+            <div class="time-item">
+              <div class="time-label">全程</div>
+              <div class="time-value">39天</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 本届看点 -->
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-label">本届看点</span>
+          </div>
+          <ul class="point-list">
+            <li class="point-item">• <strong>首次三国联办</strong>（美国+加拿大+墨西哥）</li>
+            <li class="point-item">• 首次<strong>48支球队</strong>、104场比赛</li>
+            <li class="point-item">• 场次从<strong>64场</strong>直接飙升到<strong>104场</strong></li>
+          </ul>
+        </div>
+
+        <!-- 新赛制 -->
+        <div class="section-card">
+          <div class="section-header">
+            <span class="section-label">新赛制</span>
+          </div>
+          <ul class="point-list">
+            <li class="point-item">• <strong>12个小组</strong>，每组前2名直接晋级 + 8个成绩最好的小组第3 → <strong>32强淘汰赛</strong></li>
+            <li class="point-item">• 不到最后一轮，谁都不知道谁出局</li>
+          </ul>
+        </div>
+
+        <!-- 底部号召 -->
+        <div class="callout-bottom">
+          <span class="callout-emoji">😎</span>
+          <span class="callout-text">你的观赛搭子和零食准备好了吗？</span>
+          <span class="callout-action">评论区报备！</span>
+        </div>
+      </div>
+
+      <!-- Tab 2: 投票排名 -->
+      <div id="tab2" style="display: none;">
+        <div class="ranking-header">
+          <div class="label">🔥 累计投票</div>
+          <div id="totalVotes" class="count">0</div>
+        </div>
+        
+        <div class="ranking-list" id="rankingList">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+
+      <!-- Tab 3: 球队介绍 -->
+      <div id="tab3" style="display: none;">
+        <div id="teamList">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部Tab导航 -->
+    <div class="bottom-tabs">
+      <div class="tab-item active" onclick="switchTab(0)">
+        <span>📖</span>
+        <span>观赛指南</span>
+      </div>
+      <div class="tab-item" onclick="switchTab(1)">
+        <span>🏅</span>
+        <span>投票排名</span>
+      </div>
+      <div class="tab-item" onclick="switchTab(2)">
+        <span>⚽</span>
+        <span>球队介绍</span>
+      </div>
+    </div>
+
+    <!-- 提示弹窗 -->
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    // 球队数据
+    const teams = [
+      { 
+        id: 'brazil', 
+        name: '巴西', 
+        flag: '🇧🇷', 
+        color: 'linear-gradient(135deg, #ffd700, #006400)',
+        players: '内马尔、维尼修斯、罗德里戈',
+        captain: '内马尔',
+        desc: '五星巴西，桑巴军团，以华丽脚法和进攻著称，世界杯历史最成功球队，拥有众多世界级球星。'
+      },
+      { 
+        id: 'argentina', 
+        name: '阿根廷', 
+        flag: '🇦🇷', 
+        color: 'linear-gradient(135deg, #75aadb, #ffffff)',
+        players: '梅西、迪马利亚、劳塔罗',
+        captain: '梅西',
+        desc: '潘帕斯雄鹰，拥有传奇球星梅西，2022卡塔尔世界杯冠军，打法华丽，团队配合默契。'
+      },
+      { 
+        id: 'france', 
+        name: '法国', 
+        flag: '🇫🇷', 
+        color: 'linear-gradient(135deg, #002395, #ffffff)',
+        players: '姆巴佩、格列兹曼、坎特',
+        captain: '姆巴佩',
+        desc: '高卢雄鸡，2018世界杯冠军，拥有姆巴佩等超级球星，阵容豪华，攻防兼备。'
+      },
+      { 
+        id: 'germany', 
+        name: '德国', 
+        flag: '🇩🇪', 
+        color: 'linear-gradient(135deg, #000000, #dd0000)',
+        players: '穆勒、诺伊尔、哈弗茨',
+        captain: '诺伊尔',
+        desc: '日耳曼战车，四届世界杯冠军，以严谨战术和强大意志力闻名，青训体系出色。'
+      },
+      { 
+        id: 'spain', 
+        name: '西班牙', 
+        flag: '🇪🇸', 
+        color: 'linear-gradient(135deg, #c60b1e, #ffc400)',
+        players: '佩德里、加维、莫拉塔',
+        captain: '拉莫斯',
+        desc: '斗牛士军团，2010世界杯冠军，以传控足球著称，技术细腻，配合默契。'
+      },
+      { 
+        id: 'england', 
+        name: '英格兰', 
+        flag: '🏴', 
+        color: 'linear-gradient(135deg, #ffffff, #cf081f)',
+        players: '凯恩、斯特林、福登',
+        captain: '凯恩',
+        desc: '三狮军团，年轻球员辈出，2018世界杯第四名，打法硬朗，进攻犀利。'
+      },
+      { 
+        id: 'portugal', 
+        name: '葡萄牙', 
+        flag: '🇵🇹', 
+        color: 'linear-gradient(135deg, #006600, #ff0000)',
+        players: 'C罗、B费、菲利克斯',
+        captain: 'C罗',
+        desc: '五盾军团，拥有传奇球星C罗，球队整体实力均衡，大赛经验丰富。'
+      },
+      { 
+        id: 'netherlands', 
+        name: '荷兰', 
+        flag: '🇳🇱', 
+        color: 'linear-gradient(135deg, #ff6600, #ffffff)',
+        players: '范戴克、德容、德佩',
+        captain: '范戴克',
+        desc: '橙衣军团，以全攻全守战术闻名，多次进入世界杯决赛，阵容实力强劲。'
+      },
+      { 
+        id: 'croatia', 
+        name: '克罗地亚', 
+        flag: '🇭🇷', 
+        color: 'linear-gradient(135deg, #ff0000, #1e50a2)',
+        players: '莫德里奇、佩里西奇、科瓦契奇',
+        captain: '莫德里奇',
+        desc: '格子军团，2018世界杯亚军，以顽强意志力和出色技术著称。'
+      },
+      { 
+        id: 'italy', 
+        name: '意大利', 
+        flag: '🇮🇹', 
+        color: 'linear-gradient(135deg, #009246, #ffffff)',
+        players: '基耶利尼、博努奇、巴雷拉',
+        captain: '基耶利尼',
+        desc: '蓝衣军团，四届世界杯冠军，以坚固防守和战术素养闻名，2020欧洲杯冠军。'
+      },
+      { 
+        id: 'belgium', 
+        name: '比利时', 
+        flag: '🇧🇪', 
+        color: 'linear-gradient(135deg, #000000, #ff0000)',
+        players: '德布劳内、阿扎尔、卢卡库',
+        captain: '德布劳内',
+        desc: '欧洲红魔，拥有德布劳内等顶级中场，技术出众，进攻火力强大。'
+      },
+      { 
+        id: 'switzerland', 
+        name: '瑞士', 
+        flag: '🇨🇭', 
+        color: 'linear-gradient(135deg, #ff0000, #ffffff)',
+        players: '沙奇里、扎卡、阿坎吉',
+        captain: '扎卡',
+        desc: '瑞士军刀，以稳健防守和团队配合著称，多次在大赛中扮演黑马角色。'
+      },
+      { 
+        id: 'serbia', 
+        name: '塞尔维亚', 
+        flag: '🇷🇸', 
+        color: 'linear-gradient(135deg, #c60b1e, #0033a0)',
+        players: '米林科维奇、弗拉霍维奇、科斯蒂奇',
+        captain: '米林科维奇',
+        desc: '巴尔干雄鹰，身体强壮，打法硬朗，拥有多名欧洲顶级联赛球员。'
+      },
+      { 
+        id: 'mexico', 
+        name: '墨西哥', 
+        flag: '🇲🇽', 
+        color: 'linear-gradient(135deg, #006633, #ffffff)',
+        players: '洛萨诺、奥乔亚、希门尼斯',
+        captain: '奥乔亚',
+        desc: '中北美劲旅，以出色的技术和快速反击著称，多次进入世界杯淘汰赛。'
+      },
+      { 
+        id: 'usa', 
+        name: '美国', 
+        flag: '🇺🇸', 
+        color: 'linear-gradient(135deg, #b22234, #ffffff)',
+        players: '普利希奇、麦肯尼、德斯特',
+        captain: '普利希奇',
+        desc: '山姆大叔，东道主之一，年轻球员崛起，实力稳步提升。'
+      }
+    ];
+
+    // 投票数据
+    let votes = {};
+    let lastVoteDate = '';
+
+    // 初始化数据
+    function initData() {
+      const savedVotes = localStorage.getItem('worldCupVotes');
+      const savedDate = localStorage.getItem('lastVoteDate');
+      
+      if (savedVotes) {
+        votes = JSON.parse(savedVotes);
+      } else {
+        votes = {
+          brazil: 2456,
+          argentina: 2389,
+          france: 1876,
+          germany: 1543,
+          spain: 1421,
+          england: 1356,
+          portugal: 1289,
+          netherlands: 1156,
+          croatia: 987,
+          italy: 876,
+          belgium: 756,
+          switzerland: 634,
+          serbia: 521,
+          mexico: 412,
+          usa: 389
+        };
+      }
+      
+      lastVoteDate = savedDate || '';
+    }
+
+    // 保存数据
+    function saveData() {
+      localStorage.setItem('worldCupVotes', JSON.stringify(votes));
+      localStorage.setItem('lastVoteDate', lastVoteDate);
+    }
+
+    // 获取排序后的球队
+    function getSortedTeams() {
+      return teams.map(team => ({
+        ...team,
+        votes: votes[team.id] || 0
+      })).sort((a, b) => b.votes - a.votes);
+    }
+
+    // 检查今天是否已投票
+    function hasVotedToday() {
+      const today = new Date().toDateString();
+      return lastVoteDate === today;
+    }
+
+    // 投票
+    function vote(teamId) {
+      if (hasVotedToday()) {
+        showToast('每天只能投一次哦，欢迎明天再来！');
+        return;
+      }
+
+      votes[teamId]++;
+      lastVoteDate = new Date().toDateString();
+      saveData();
+      updateDisplay();
+      showToast('🎉 投票成功！感谢您的支持！');
+    }
+
+    // 显示提示
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // 更新显示
+    function updateDisplay() {
+      const sortedTeams = getSortedTeams();
+      
+      // 更新总票数
+      const total = sortedTeams.reduce((sum, team) => sum + team.votes, 0);
+      document.getElementById('totalVotes').textContent = total.toLocaleString();
+
+      // 更新排行榜（只显示前10）
+      updateRanking(sortedTeams.slice(0, 10));
+
+      // 更新球队介绍（显示所有球队）
+      updateTeamList(sortedTeams);
+    }
+
+    // 更新排行榜
+    function updateRanking(sortedTeams) {
+      const list = document.getElementById('rankingList');
+      list.innerHTML = '';
+
+      sortedTeams.forEach((team, index) => {
+        const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'other';
+        const itemClass = index < 3 ? 'top3' : '';
+        
+        const item = document.createElement('div');
+        item.className = `ranking-item ${itemClass}`;
+        item.innerHTML = `
+          <div class="rank ${rankClass}">${index + 1}</div>
+          <div class="team-icon" style="background: ${team.color};">${team.flag}</div>
+          <div class="team-info">
+            <div class="team-name">${team.name}</div>
+            <div class="team-votes">${team.votes.toLocaleString()} 票</div>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // 更新球队列表
+    function updateTeamList(sortedTeams) {
+      const list = document.getElementById('teamList');
+      list.innerHTML = '';
+
+      const canVote = !hasVotedToday();
+
+      sortedTeams.forEach((team, index) => {
+        const card = document.createElement('div');
+        card.className = 'team-card';
+        card.innerHTML = `
+          <div class="team-header">
+            <div class="team-icon-large" style="background: ${team.color};">${team.flag}</div>
+            <div class="team-title">
+              <h3>${team.name}</h3>
+              <span class="rank-badge">第${index + 1}名</span>
+            </div>
+          </div>
+          <div class="team-details">
+            <div class="detail-row">
+              <span class="detail-label">核心球员</span>
+              <span class="detail-value">${team.players}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">队长</span>
+              <span class="detail-value">${team.captain}</span>
+            </div>
+          </div>
+          <p class="team-desc">${team.desc}</p>
+          <button class="vote-btn ${canVote ? '' : 'disabled'}" onclick="${canVote ? `vote('${team.id}')` : ''}">
+            ${canVote ? `⚽ 为${team.name}投票` : '今日已投票'}
+          </button>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // 切换Tab
+    function switchTab(index) {
+      const tabs = document.querySelectorAll('.tab-item');
+      const contents = document.querySelectorAll('.tab-content > div');
+      
+      tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+      });
+      
+      contents.forEach((content, i) => {
+        content.style.display = i === index ? 'block' : 'none';
+      });
+    }
+
+    // 更新时间
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+    }
+
+    // 页面加载
+    initData();
+    updateDisplay();
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    // 动态添加彩带颜色
+    const confettiElements = document.querySelectorAll('.confetti');
+    const colors = ['#ffcc00', '#ff6600', '#ffffff', '#ff0000'];
+    confettiElements.forEach((el, i) => {
+      el.style.background = colors[i % colors.length];
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    });
+  </script>
+</body>
+</html>

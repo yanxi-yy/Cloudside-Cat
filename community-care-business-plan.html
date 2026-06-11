@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社区养老服务项目企划书</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+    }
+    .header-bg {
+      background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%);
+    }
+    .section-title {
+      background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(8, 145, 178, 0.15);
+    }
+    .service-card {
+      background: linear-gradient(135deg, white 0%, #f0fdfa 100%);
+    }
+    .risk-card {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+    .solution-card {
+      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- 封面 -->
+  <div class="header-bg text-white py-16 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="mb-6">
+        <span class="text-6xl">🏠</span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">社区养老服务项目企划书</h1>
+      <p class="text-xl opacity-90">整合社会资源 · 构建智慧养老新生态</p>
+      <div class="mt-8 flex justify-center gap-4 text-sm">
+        <span class="bg-white/20 px-4 py-2 rounded-full">项目名称：康乐家园</span>
+        <span class="bg-white/20 px-4 py-2 rounded-full">服务理念：让每一位老人安享晚年</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <!-- 目录 -->
+    <div class="bg-white rounded-2xl p-6 mb-8 shadow-sm">
+      <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span>📋</span> 目录
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="#business-model" class="text-blue-600 hover:text-blue-800 font-medium">一、商业画布</a>
+        <a href="#business-process" class="text-blue-600 hover:text-blue-800 font-medium">二、业务流程</a>
+        <a href="#product-description" class="text-blue-600 hover:text-blue-800 font-medium">三、产品描述</a>
+        <a href="#services" class="text-blue-600 hover:text-blue-800 font-medium">四、服务内容</a>
+        <a href="#risk-solution" class="text-blue-600 hover:text-blue-800 font-medium">五、风险与解决方案</a>
+        <a href="#implementation" class="text-blue-600 hover:text-blue-800 font-medium">六、实施计划</a>
+      </div>
+    </div>
+
+    <!-- 一、商业画布 -->
+    <section id="business-model" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">🎯</span> 一、商业画布
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- 客户细分 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">👴👵</span>
+              <h3 class="font-bold text-gray-800">客户细分</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                已退休老人（服务需求方）
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                持有护理证的年轻人（服务供给方）
+              </li>
+            </ul>
+          </div>
+
+          <!-- 价值主张 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">💡</span>
+              <h3 class="font-bold text-gray-800">价值主张</h3>
+            </div>
+            <p class="text-gray-600 text-sm">
+              整合社会资源，以社区为单位，为老人的日常生活需求提供全方位、专业化的服务解决方案。
+            </p>
+          </div>
+
+          <!-- 渠道通路 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🌐</span>
+              <h3 class="font-bold text-gray-800">渠道通路</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                线下社区推广与合作
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                线上小程序服务平台
+              </li>
+            </ul>
+          </div>
+
+          <!-- 客户关系 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🤝</span>
+              <h3 class="font-bold text-gray-800">客户关系</h3>
+            </div>
+            <p class="text-gray-600 text-sm">
+              以社区为依托，建立信任基础，提供持续、稳定的服务关系。
+            </p>
+          </div>
+
+          <!-- 收入来源 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">💰</span>
+              <h3 class="font-bold text-gray-800">收入来源</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                付费服务抽取佣金
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                服务会员制收费
+              </li>
+            </ul>
+          </div>
+
+          <!-- 核心资源 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">👩⚕️</span>
+              <h3 class="font-bold text-gray-800">核心资源</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                持有护理证的专业服务人员
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                智慧养老服务平台系统
+              </li>
+            </ul>
+          </div>
+
+          <!-- 关键业务 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🏥</span>
+              <h3 class="font-bold text-gray-800">关键业务</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                上门服务：护理、接送、清洁、陪护、送餐
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                爱好培训与线下活动组织
+              </li>
+            </ul>
+          </div>
+
+          <!-- 重要合作 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🤝</span>
+              <h3 class="font-bold text-gray-800">重要合作</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                与社区居委会合作
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                与医院合作研发健康模型
+              </li>
+            </ul>
+          </div>
+
+          <!-- 成本结构 -->
+          <div class="service-card rounded-xl p-5 card-hover md:col-span-2">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">📊</span>
+              <h3 class="font-bold text-gray-800">成本结构</h3>
+            </div>
+            <ul class="space-y-2 text-gray-600 text-sm">
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                线下活动场地租金与物资采购
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                服务人员培训费用
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-teal-500 rounded-full"></span>
+                平台技术开发与维护
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 二、业务流程 -->
+    <section id="business-process" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">🔄</span> 二、业务流程
+        </h2>
+        
+        <!-- 正常流程 -->
+        <div class="mb-8">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>✅</span> 正常流程
+          </h3>
+          <div class="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6">
+            <div class="relative">
+              <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-teal-300"></div>
+              <div class="space-y-4 ml-8">
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                    <div>
+                      <p class="font-medium text-gray-800">发起预约</p>
+                      <p class="text-sm text-gray-500">用户在小程序内发起预约订单（包含发起人称呼、服务地址、服务时间、服务内容等）</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                    <div>
+                      <p class="font-medium text-gray-800">订单分配</p>
+                      <p class="text-sm text-gray-500">系统收到订单后，根据评价、时间、地点综合考量，分配给合适的服务人员</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                    <div>
+                      <p class="font-medium text-gray-800">服务提醒</p>
+                      <p class="text-sm text-gray-500">服务开始前30分钟、15分钟分别提醒服务人员和用户</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                    <div>
+                      <p class="font-medium text-gray-800">服务执行</p>
+                      <p class="text-sm text-gray-500">服务人员上门提供服务，结束后由用户确认完成</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 异常情况 -->
+        <div>
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>⚠️</span> 异常情况处理
+          </h3>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
+              <h4 class="font-medium text-gray-800 mb-2">用户取消订单</h4>
+              <p class="text-sm text-gray-600">服务开始前可取消订单，距离服务时间3小时内取消将按比例扣除服务金额</p>
+            </div>
+            <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
+              <h4 class="font-medium text-gray-800 mb-2">服务人员转单</h4>
+              <p class="text-sm text-gray-600">服务人员接单后不可取消，只能提交系统转派给其他人员，限制每周/月转单次数</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 三、产品描述 -->
+    <section id="product-description" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">📱</span> 三、产品描述
+        </h2>
+
+        <!-- AI赋能 -->
+        <div class="mb-8">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>🤖</span> AI赋能
+          </h3>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-purple-50 rounded-xl p-4">
+              <p class="text-gray-600 text-sm">通过AI系统协调资源，组织健康项目</p>
+            </div>
+            <div class="bg-purple-50 rounded-xl p-4">
+              <p class="text-gray-600 text-sm">利用AI运营助手降低人力成本</p>
+            </div>
+            <div class="bg-purple-50 rounded-xl p-4">
+              <p class="text-gray-600 text-sm">通过技术赋能，把单一的"助餐"升级为"健康管理"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户端小程序 -->
+        <div class="mb-8">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>👤</span> 用户端小程序
+          </h3>
+          <div class="bg-blue-50 rounded-xl p-6">
+            <div class="grid md:grid-cols-3 gap-6">
+              <div>
+                <h4 class="font-medium text-gray-800 mb-3">服务模块</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li>展示所有可提供的服务</li>
+                  <li>选择服务、预约时间</li>
+                  <li>支付定金后下单</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-800 mb-3">预约记录</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li>展示所有预约记录</li>
+                  <li>显示订单状态</li>
+                  <li>提供再次预约按钮</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-800 mb-3">我的</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li>健康档案（身体数据、疾病、用药）</li>
+                  <li>注意事项（医嘱、饮食起居）</li>
+                  <li>预约日历（当月预约状态）</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 服务端小程序 -->
+        <div class="mb-8">
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>👩⚕️</span> 服务端小程序
+          </h3>
+          <div class="bg-green-50 rounded-xl p-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 class="font-medium text-gray-800 mb-3">订单列表</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li>查看待接订单详情</li>
+                  <li>显示服务内容、时间、地点、金额</li>
+                  <li>点击接单按钮接受订单</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-800 mb-3">我的</h4>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li>完成订单数、赚取金额</li>
+                  <li>获得的评价等级</li>
+                  <li>个人预约日历</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 后台管理系统 -->
+        <div>
+          <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>🔧</span> 后台管理系统
+          </h3>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">用户管理</h4>
+              <p class="text-sm text-gray-600">管理需求端和供给端用户信息，包含健康档案、服务记录等</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">订单管理</h4>
+              <p class="text-sm text-gray-600">智能订单派发，根据评价、时间、地点综合匹配</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">培训管理</h4>
+              <p class="text-sm text-gray-600">职业素养培训、护理技能培训</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">服务管理</h4>
+              <p class="text-sm text-gray-600">服务增删改查，定义服务内容、时长、类型</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">待实现服务</h4>
+              <p class="text-sm text-gray-600">记录用户提出但暂无法提供的服务需求</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-4">
+              <h4 class="font-medium text-gray-800 mb-2">数据分析</h4>
+              <p class="text-sm text-gray-600">分析服务发起规律，优化人员配置，提高效率</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 四、服务内容 -->
+    <section id="services" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">🏥</span> 四、服务内容
+        </h2>
+
+        <div class="space-y-6">
+          <!-- 生活照料类 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🍽️</span>
+              <h3 class="font-bold text-gray-800">一、生活照料类</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <h4 class="font-medium text-gray-700">日常起居协助</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>助餐（送餐/堂食）</li>
+                  <li>助浴</li>
+                  <li>助洁（清洁房间）</li>
+                  <li>助行（陪同散步）</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">托管服务</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>日间照料（白天托管）</li>
+                  <li>短期托养（喘息服务）</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">洗衣与维修</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>衣物清洗</li>
+                  <li>家电/房屋小修</li>
+                  <li>适老化改造建议</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 医疗健康类 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🩺</span>
+              <h3 class="font-bold text-gray-800">二、医疗健康类</h3>
+            </div>
+            <div class="grid md:grid-cols-4 gap-4">
+              <div>
+                <h4 class="font-medium text-gray-700">基础诊疗</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>测量血压/血糖</li>
+                  <li>用药提醒</li>
+                  <li>常见病诊疗</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">康复护理</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>术后康复训练</li>
+                  <li>失能老人护理</li>
+                  <li>压疮护理</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">健康管理</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>建立健康档案</li>
+                  <li>定期体检</li>
+                  <li>慢性病跟踪指导</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">精神关怀</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>认知症筛查</li>
+                  <li>干预训练</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 精神文化类 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🎨</span>
+              <h3 class="font-bold text-gray-800">三、精神文化类</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <h4 class="font-medium text-gray-700">文娱活动</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>书法/绘画/手工课</li>
+                  <li>唱歌/舞蹈/棋牌</li>
+                  <li>节日主题活动</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">学习提升</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>智能手机使用培训</li>
+                  <li>健康讲座</li>
+                  <li>法律/防诈骗知识普及</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">社交支持</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>老人互助小组</li>
+                  <li>茶话会</li>
+                  <li>集体生日会</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 心理与支持类 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">💝</span>
+              <h3 class="font-bold text-gray-800">四、心理与支持类</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <h4 class="font-medium text-gray-700">心理疏导</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>定期谈心</li>
+                  <li>情绪安抚</li>
+                  <li>失独/空巢老人专项关怀</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">法律咨询</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>遗嘱</li>
+                  <li>赡养</li>
+                  <li>财产等法律问题对接</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">生命教育</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>安宁疗护科普</li>
+                  <li>转介服务</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 安全与辅助类 -->
+          <div class="service-card rounded-xl p-5 card-hover">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-2xl">🚨</span>
+              <h3 class="font-bold text-gray-800">五、安全与辅助类</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+              <div>
+                <h4 class="font-medium text-gray-700">紧急救助</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>一键呼叫设备</li>
+                  <li>24小时应急响应</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">智能监测</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>烟感/燃气报警器</li>
+                  <li>防走失定位器</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-700">适老出行</h4>
+                <ul class="text-sm text-gray-600 mt-1">
+                  <li>辅助器具租赁</li>
+                  <li>无障碍车辆预约</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 五、风险与解决方案 -->
+    <section id="risk-solution" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">🛡️</span> 五、风险与解决方案
+        </h2>
+
+        <div class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <!-- 风险1 -->
+            <div class="risk-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">💸</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">风险：付费意愿不足</h4>
+                  <p class="text-sm text-gray-600 mt-1">部分老人及家属对付费养老服务接受度较低</p>
+                </div>
+              </div>
+            </div>
+            <!-- 方案1 -->
+            <div class="solution-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">💡</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">解决方案</h4>
+                  <p class="text-sm text-gray-600 mt-1">降低费用门槛，提供会员制服务，降低单次服务费用</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 风险2 -->
+            <div class="risk-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">⚖️</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">风险：服务过程存在风险</h4>
+                  <p class="text-sm text-gray-600 mt-1">服务过程中可能发生意外，存在安全隐患</p>
+                </div>
+              </div>
+            </div>
+            <!-- 方案2 -->
+            <div class="solution-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">💡</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">解决方案</h4>
+                  <p class="text-sm text-gray-600 mt-1">优先采用本社区人员提供服务，优先雇佣有志愿者经历、献血者、医护从业者等信用记录良好的人员</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 风险3 -->
+            <div class="risk-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">🔄</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">风险：私下交易风险</h4>
+                  <p class="text-sm text-gray-600 mt-1">存在绕过平台私下交易的风险，影响平台收益</p>
+                </div>
+              </div>
+            </div>
+            <!-- 方案3 -->
+            <div class="solution-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">💡</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">解决方案</h4>
+                  <p class="text-sm text-gray-600 mt-1">从基础服务向专业服务过渡，形成固定医疗人员提供专业服务的模式，设立社区线下服务诊所</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 风险4 -->
+            <div class="risk-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">🤖</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">风险：机器人替代人工</h4>
+                  <p class="text-sm text-gray-600 mt-1">随着机器人技术普及，可能替代部分人工服务</p>
+                </div>
+              </div>
+            </div>
+            <!-- 方案4 -->
+            <div class="solution-card rounded-xl p-4">
+              <div class="flex items-start gap-3">
+                <span class="text-xl">💡</span>
+                <div>
+                  <h4 class="font-medium text-gray-800">解决方案</h4>
+                  <p class="text-sm text-gray-600 mt-1">深耕精神交流、户外活动、专业诊疗等机器人难以替代的领域，同时将机器人作为服务项目统一规划</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 六、实施计划 -->
+    <section id="implementation" class="mb-12">
+      <div class="bg-white rounded-2xl p-8 shadow-sm">
+        <h2 class="text-2xl font-bold section-title mb-6 flex items-center gap-3">
+          <span class="text-3xl">📅</span> 六、实施计划
+        </h2>
+
+        <div class="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6">
+          <div class="grid md:grid-cols-4 gap-6">
+            <div class="text-center">
+              <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="text-2xl font-bold text-white">1</span>
+              </div>
+              <h4 class="font-bold text-gray-800">第一阶段</h4>
+              <p class="text-sm text-gray-500 mt-1">1-3个月</p>
+              <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                <li>平台开发完成</li>
+                <li>服务人员招募培训</li>
+                <li>社区合作洽谈</li>
+              </ul>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="text-2xl font-bold text-white">2</span>
+              </div>
+              <h4 class="font-bold text-gray-800">第二阶段</h4>
+              <p class="text-sm text-gray-500 mt-1">4-6个月</p>
+              <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                <li>试点社区上线</li>
+                <li>用户推广注册</li>
+                <li>服务流程优化</li>
+              </ul>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="text-2xl font-bold text-white">3</span>
+              </div>
+              <h4 class="font-bold text-gray-800">第三阶段</h4>
+              <p class="text-sm text-gray-500 mt-1">7-12个月</p>
+              <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                <li>多社区拓展</li>
+                <li>医院合作深化</li>
+                <li>AI功能上线</li>
+              </ul>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span class="text-2xl font-bold text-white">4</span>
+              </div>
+              <h4 class="font-bold text-gray-800">第四阶段</h4>
+              <p class="text-sm text-gray-500 mt-1">12个月+</p>
+              <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                <li>区域规模化运营</li>
+                <li>品牌建设推广</li>
+                <li>持续迭代优化</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 结语 -->
+    <div class="bg-gradient-to-r from-teal-500 to-cyan-500 rounded-2xl p-8 text-white text-center">
+      <div class="text-4xl mb-4">🌟</div>
+      <h2 class="text-xl font-bold mb-2">让养老服务更有温度</h2>
+      <p class="opacity-90">通过智慧科技与人文关怀的结合，为每一位老人打造幸福晚年生活</p>
+      <div class="mt-6 flex justify-center gap-4">
+        <span class="bg-white/20 px-4 py-2 rounded-full text-sm">项目名称：康乐家园</span>
+        <span class="bg-white/20 px-4 py-2 rounded-full text-sm">愿景：构建智慧养老新生态</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

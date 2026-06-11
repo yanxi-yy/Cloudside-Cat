@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>社区养老服务</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      box-sizing: border-box;
+    }
+    .page-container {
+      min-height: 100vh;
+      background: #f8fafc;
+    }
+    .nav-tab {
+      transition: all 0.2s ease;
+    }
+    .nav-tab.active {
+      color: #ea580c;
+    }
+    .nav-tab.active svg {
+      stroke: #ea580c;
+    }
+    .service-card {
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+    .service-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.1);
+      border-color: rgba(234, 88, 12, 0.1);
+    }
+    .modal-overlay {
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-content {
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .calendar-day {
+      position: relative;
+    }
+    .calendar-day.has-appointment {
+      background: #fef3c7;
+      border-radius: 50%;
+    }
+    .calendar-day.has-appointment::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .calendar-day.status-pending::after {
+      background: #f59e0b;
+    }
+    .calendar-day.status-confirmed::after {
+      background: #10b981;
+    }
+    .calendar-day.status-completed::after {
+      background: #9ca3af;
+    }
+    .status-badge {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .status-pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .status-confirmed {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .status-completed {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+    .status-canceled {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="page-container">
+  <!-- 页面内容 -->
+  <div id="page-content">
+    <!-- 服务页面 -->
+    <div class="page active" id="page-services">
+      <!-- 顶部搜索栏 -->
+      <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="px-4 py-4">
+          <div class="flex items-center gap-3">
+            <div class="flex-1 bg-orange-50 rounded-full px-4 py-3 flex items-center">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="text" placeholder="搜索服务" class="bg-transparent ml-2 flex-1 outline-none">
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 服务分类标签 -->
+      <div class="px-4 mt-4">
+        <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide pb-2">
+          <button class="category-tab active px-4 py-2 bg-orange-500 text-white rounded-full text-sm whitespace-nowrap">全部</button>
+          <button class="category-tab px-4 py-2 bg-white text-gray-600 rounded-full text-sm whitespace-nowrap">生活照料</button>
+          <button class="category-tab px-4 py-2 bg-white text-gray-600 rounded-full text-sm whitespace-nowrap">医疗健康</button>
+          <button class="category-tab px-4 py-2 bg-white text-gray-600 rounded-full text-sm whitespace-nowrap">精神文化</button>
+          <button class="category-tab px-4 py-2 bg-white text-gray-600 rounded-full text-sm whitespace-nowrap">心理支持</button>
+          <button class="category-tab px-4 py-2 bg-white text-gray-600 rounded-full text-sm whitespace-nowrap">安全辅助</button>
+        </div>
+      </div>
+
+      <!-- 服务列表 -->
+      <div class="px-4 mt-4 space-y-4">
+        <!-- 生活照料类 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </div>
+            <h2 class="font-semibold text-gray-800">生活照料类</h2>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"助餐服务","price":20,"desc":"送餐/堂食","duration":"单次"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🍽️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">助餐服务</h3>
+              <p class="text-xs text-gray-500 mt-1">送餐/堂食</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥20</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"助浴服务","price":80,"desc":"专业洗浴护理","duration":"单次"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🛁</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">助浴服务</h3>
+              <p class="text-xs text-gray-500 mt-1">专业洗浴护理</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥80</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"助洁服务","price":60,"desc":"房间清洁","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🧹</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">助洁服务</h3>
+              <p class="text-xs text-gray-500 mt-1">房间清洁</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥60</span>
+                <span class="text-xs text-gray-400">/2小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"助行服务","price":40,"desc":"陪同散步/出行","duration":"单次"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🚶</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">助行服务</h3>
+              <p class="text-xs text-gray-500 mt-1">陪同散步/出行</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥40</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"日间照料","price":120,"desc":"白天托管","duration":"全天"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🏠</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">日间照料</h3>
+              <p class="text-xs text-gray-500 mt-1">白天托管</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥120</span>
+                <span class="text-xs text-gray-400">/天</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"短期托养","price":300,"desc":"喘息服务","duration":"天"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🏨</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">短期托养</h3>
+              <p class="text-xs text-gray-500 mt-1">喘息服务</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥300</span>
+                <span class="text-xs text-gray-400">/天</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"衣物清洗","price":30,"desc":"洗衣熨烫","duration":"次"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🧺</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">衣物清洗</h3>
+              <p class="text-xs text-gray-500 mt-1">洗衣熨烫</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥30</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"家电维修","price":80,"desc":"家电/房屋小修","duration":"次"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🔧</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">家电维修</h3>
+              <p class="text-xs text-gray-500 mt-1">家电/房屋小修</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">¥80</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-orange-50 rounded-xl p-3" data-service='{"name":"适老化改造","price":0,"desc":"改造建议咨询","duration":"免费"}'>
+              <div class="w-12 h-12 bg-orange-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🏡</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">适老化改造</h3>
+              <p class="text-xs text-gray-500 mt-1">改造建议咨询</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-orange-500">免费</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 医疗健康类 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+            </div>
+            <h2 class="font-semibold text-gray-800">医疗健康类</h2>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"血压血糖检测","price":30,"desc":"专业测量","duration":"30分钟"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🩺</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">血压血糖检测</h3>
+              <p class="text-xs text-gray-500 mt-1">专业测量</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥30</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"常见病诊疗","price":50,"desc":"驻点医生诊疗","duration":"次"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">👩⚕️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">常见病诊疗</h3>
+              <p class="text-xs text-gray-500 mt-1">驻点医生诊疗</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥50</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"康复训练","price":100,"desc":"术后康复","duration":"1小时"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">💪</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">康复训练</h3>
+              <p class="text-xs text-gray-500 mt-1">术后康复</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥100</span>
+                <span class="text-xs text-gray-400">/小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"失能护理","price":150,"desc":"翻身/压疮护理","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🛏️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">失能护理</h3>
+              <p class="text-xs text-gray-500 mt-1">翻身/压疮护理</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥150</span>
+                <span class="text-xs text-gray-400">/2小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"健康档案","price":50,"desc":"建立健康档案","duration":"单次"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📋</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">健康档案</h3>
+              <p class="text-xs text-gray-500 mt-1">建立健康档案</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥50</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"定期体检","price":200,"desc":"全面体检服务","duration":"次"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🏥</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">定期体检</h3>
+              <p class="text-xs text-gray-500 mt-1">全面体检服务</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥200</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"用药提醒","price":20,"desc":"定时提醒服务","duration":"月"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">💊</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">用药提醒</h3>
+              <p class="text-xs text-gray-500 mt-1">定时提醒服务</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥20</span>
+                <span class="text-xs text-gray-400">/月</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"慢性病指导","price":40,"desc":"慢病跟踪指导","duration":"次"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📊</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">慢性病指导</h3>
+              <p class="text-xs text-gray-500 mt-1">慢病跟踪指导</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥40</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-green-50 rounded-xl p-3" data-service='{"name":"认知症筛查","price":60,"desc":"老年痴呆筛查","duration":"次"}'>
+              <div class="w-12 h-12 bg-green-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🧠</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">认知症筛查</h3>
+              <p class="text-xs text-gray-500 mt-1">老年痴呆筛查</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-green-500">¥60</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 精神文化类 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h2 class="font-semibold text-gray-800">精神文化类</h2>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"书法绘画课","price":40,"desc":"艺术课程","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🎨</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">书法绘画课</h3>
+              <p class="text-xs text-gray-500 mt-1">艺术课程</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥40</span>
+                <span class="text-xs text-gray-400">/节</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"手工课","price":35,"desc":"手工制作","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">✂️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">手工课</h3>
+              <p class="text-xs text-gray-500 mt-1">手工制作</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥35</span>
+                <span class="text-xs text-gray-400">/节</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"唱歌舞蹈","price":30,"desc":"文娱活动","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🎤</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">唱歌舞蹈</h3>
+              <p class="text-xs text-gray-500 mt-1">文娱活动</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥30</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"棋牌活动","price":20,"desc":"棋牌娱乐","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🀄</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">棋牌活动</h3>
+              <p class="text-xs text-gray-500 mt-1">棋牌娱乐</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥20</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"节日活动","price":0,"desc":"主题活动","duration":"次"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🎉</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">节日活动</h3>
+              <p class="text-xs text-gray-500 mt-1">主题活动</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">免费</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"智能手机培训","price":50,"desc":"使用培训","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📱</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">智能手机培训</h3>
+              <p class="text-xs text-gray-500 mt-1">使用培训</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥50</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"健康讲座","price":0,"desc":"知识普及","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📚</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">健康讲座</h3>
+              <p class="text-xs text-gray-500 mt-1">知识普及</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">免费</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"法律讲座","price":0,"desc":"防诈骗知识","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">⚖️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">法律讲座</h3>
+              <p class="text-xs text-gray-500 mt-1">防诈骗知识</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">免费</span>
+              </div>
+            </div>
+            <div class="service-card bg-purple-50 rounded-xl p-3" data-service='{"name":"茶话会","price":25,"desc":"社交聚会","duration":"2小时"}'>
+              <div class="w-12 h-12 bg-purple-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🍵</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">茶话会</h3>
+              <p class="text-xs text-gray-500 mt-1">社交聚会</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-purple-500">¥25</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 心理与支持类 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h2 class="font-semibold text-gray-800">心理与支持类</h2>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"心理疏导","price":80,"desc":"定期谈心/情绪安抚","duration":"1小时"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">💝</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">心理疏导</h3>
+              <p class="text-xs text-gray-500 mt-1">定期谈心/情绪安抚</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">¥80</span>
+                <span class="text-xs text-gray-400">/小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"失独关怀","price":60,"desc":"失独老人专项关怀","duration":"1小时"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🤝</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">失独关怀</h3>
+              <p class="text-xs text-gray-500 mt-1">失独老人专项关怀</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">¥60</span>
+                <span class="text-xs text-gray-400">/小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"空巢关怀","price":60,"desc":"空巢老人专项关怀","duration":"1小时"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🏠</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">空巢关怀</h3>
+              <p class="text-xs text-gray-500 mt-1">空巢老人专项关怀</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">¥60</span>
+                <span class="text-xs text-gray-400">/小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"法律咨询","price":100,"desc":"遗嘱/赡养/财产","duration":"1小时"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">⚖️</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">法律咨询</h3>
+              <p class="text-xs text-gray-500 mt-1">遗嘱/赡养/财产</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">¥100</span>
+                <span class="text-xs text-gray-400">/小时</span>
+              </div>
+            </div>
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"生命教育","price":0,"desc":"安宁疗护科普","duration":"次"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🌸</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">生命教育</h3>
+              <p class="text-xs text-gray-500 mt-1">安宁疗护科普</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">免费</span>
+              </div>
+            </div>
+            <div class="service-card bg-blue-50 rounded-xl p-3" data-service='{"name":"互助小组","price":0,"desc":"老人互助支持","duration":"次"}'>
+              <div class="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">👥</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">互助小组</h3>
+              <p class="text-xs text-gray-500 mt-1">老人互助支持</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-blue-500">免费</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 安全与辅助类 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <h2 class="font-semibold text-gray-800">安全与辅助类</h2>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"紧急呼叫","price":15,"desc":"一键呼叫设备","duration":"月"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📞</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">紧急呼叫</h3>
+              <p class="text-xs text-gray-500 mt-1">一键呼叫设备</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥15</span>
+                <span class="text-xs text-gray-400">/月</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"应急响应","price":0,"desc":"24小时应急服务","duration":"免费"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🚑</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">应急响应</h3>
+              <p class="text-xs text-gray-500 mt-1">24小时应急服务</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">免费</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"烟感报警","price":20,"desc":"烟雾报警器安装","duration":"月"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🔔</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">烟感报警</h3>
+              <p class="text-xs text-gray-500 mt-1">烟雾报警器安装</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥20</span>
+                <span class="text-xs text-gray-400">/月</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"燃气报警","price":20,"desc":"燃气报警器安装","duration":"月"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">💨</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">燃气报警</h3>
+              <p class="text-xs text-gray-500 mt-1">燃气报警器安装</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥20</span>
+                <span class="text-xs text-gray-400">/月</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"防走失定位","price":30,"desc":"定位器租赁","duration":"月"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">📍</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">防走失定位</h3>
+              <p class="text-xs text-gray-500 mt-1">定位器租赁</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥30</span>
+                <span class="text-xs text-gray-400">/月</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"轮椅租赁","price":30,"desc":"辅助器具租赁","duration":"天"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">♿</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">轮椅租赁</h3>
+              <p class="text-xs text-gray-500 mt-1">辅助器具租赁</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥30</span>
+                <span class="text-xs text-gray-400">/天</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"拐杖租赁","price":10,"desc":"拐杖/助行器","duration":"天"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🦯</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">拐杖租赁</h3>
+              <p class="text-xs text-gray-500 mt-1">拐杖/助行器</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥10</span>
+                <span class="text-xs text-gray-400">/天</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"无障碍车辆","price":100,"desc":"预约用车","duration":"次"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🚐</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">无障碍车辆</h3>
+              <p class="text-xs text-gray-500 mt-1">预约用车</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥100</span>
+                <span class="text-xs text-gray-400">/次</span>
+              </div>
+            </div>
+            <div class="service-card bg-red-50 rounded-xl p-3" data-service='{"name":"助行器租赁","price":15,"desc":"助行器租赁","duration":"天"}'>
+              <div class="w-12 h-12 bg-red-200 rounded-lg flex items-center justify-center mb-2">
+                <span class="text-2xl">🚶</span>
+              </div>
+              <h3 class="font-medium text-gray-800 text-sm">助行器租赁</h3>
+              <p class="text-xs text-gray-500 mt-1">助行器租赁</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-lg font-bold text-red-500">¥15</span>
+                <span class="text-xs text-gray-400">/天</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部占位 -->
+      <div class="h-20"></div>
+    </div>
+
+    <!-- 预约记录页面 -->
+    <div class="page hidden" id="page-orders">
+      <!-- 顶部标题 -->
+      <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="px-4 py-4">
+          <h1 class="text-lg font-semibold text-gray-800">我的预约</h1>
+        </div>
+        <div class="flex border-b">
+          <button class="order-tab flex-1 py-3 text-center text-sm font-medium active text-orange-500 border-b-2 border-orange-500">全部</button>
+          <button class="order-tab flex-1 py-3 text-center text-sm font-medium text-gray-500">待确认</button>
+          <button class="order-tab flex-1 py-3 text-center text-sm font-medium text-gray-500">已确认</button>
+          <button class="order-tab flex-1 py-3 text-center text-sm font-medium text-gray-500">已完成</button>
+        </div>
+      </header>
+
+      <!-- 预约列表 -->
+      <div class="px-4 mt-4 space-y-4">
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">预约号: YY20240601001</span>
+            <span class="status-badge status-pending">待确认</span>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">🍽️</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-800 text-base">助餐服务</h3>
+              <p class="text-sm text-gray-500 mt-1">送餐服务</p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>📅 2024-06-15</span>
+                <span>⏰ 11:30</span>
+              </div>
+              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="truncate">幸福小区1号楼3单元502</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-baseline gap-1">
+              <span class="text-sm text-gray-500">金额:</span>
+              <span class="text-xl font-bold text-orange-600">¥20</span>
+            </div>
+            <button class="reorder-btn px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full text-sm font-medium hover:from-orange-600 hover:to-amber-600 transition">再次预约</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">预约号: YY20240528002</span>
+            <span class="status-badge status-confirmed">已确认</span>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">🩺</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-800 text-base">血压血糖检测</h3>
+              <p class="text-sm text-gray-500 mt-1">专业测量服务</p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>📅 2024-06-10</span>
+                <span>⏰ 09:00</span>
+              </div>
+              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="truncate">养老服务中心（到店服务）</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-baseline gap-1">
+              <span class="text-sm text-gray-500">金额:</span>
+              <span class="text-xl font-bold text-green-600">¥30</span>
+            </div>
+            <button class="reorder-btn px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full text-sm font-medium hover:from-orange-600 hover:to-amber-600 transition">再次预约</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">预约号: YY20240520003</span>
+            <span class="status-badge status-completed">已完成</span>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">🧹</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-800 text-base">助洁服务</h3>
+              <p class="text-sm text-gray-500 mt-1">房间清洁服务</p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>📅 2024-05-25</span>
+                <span>⏰ 14:00</span>
+              </div>
+              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="truncate">康乐家园2号楼1单元301</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-baseline gap-1">
+              <span class="text-sm text-gray-500">金额:</span>
+              <span class="text-xl font-bold text-gray-600">¥60</span>
+            </div>
+            <button class="reorder-btn px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full text-sm font-medium hover:from-orange-600 hover:to-amber-600 transition">再次预约</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-gray-500">预约号: YY20240515004</span>
+            <span class="status-badge status-canceled">已取消</span>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl">🛁</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-gray-800 text-base">助浴服务</h3>
+              <p class="text-sm text-gray-500 mt-1">专业洗浴护理</p>
+              <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                <span>📅 2024-05-20</span>
+                <span>⏰ 10:00</span>
+              </div>
+              <div class="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="truncate">阳光社区3号楼2单元601</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-baseline gap-1">
+              <span class="text-sm text-gray-500">金额:</span>
+              <span class="text-xl font-bold text-gray-600">¥80</span>
+            </div>
+            <button class="reorder-btn px-5 py-2.5 bg-gray-100 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-200 transition">再次预约</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部占位 -->
+      <div class="h-20"></div>
+    </div>
+
+    <!-- 我的页面 -->
+    <div class="page hidden" id="page-profile">
+      <!-- 用户信息 -->
+      <div class="bg-gradient-to-br from-orange-500 to-orange-700 px-4 pt-8 pb-16">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <div class="text-white">
+            <h2 class="text-lg font-semibold">张大爷</h2>
+            <p class="text-sm opacity-80">68岁 · 社区养老会员</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 功能入口 -->
+      <div class="bg-white rounded-t-3xl -mt-10 relative z-10">
+        <!-- 健康档案 -->
+        <div class="px-4 py-4">
+          <button class="w-full bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <h3 class="font-semibold text-gray-800">健康档案</h3>
+                  <p class="text-xs text-gray-500">查看身体基础数据</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <!-- 注意事项 -->
+        <div class="px-4 py-4">
+          <button class="w-full bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <h3 class="font-semibold text-gray-800">注意事项</h3>
+                  <p class="text-xs text-gray-500">医嘱与日常提醒</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <!-- 预约日历 -->
+        <div class="px-4 py-4">
+          <button class="w-full bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div class="text-left">
+                  <h3 class="font-semibold text-gray-800">预约日历</h3>
+                  <p class="text-xs text-gray-500">查看当月预约</p>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <!-- 健康档案详情 -->
+        <div id="health-record" class="px-4 py-4 hidden">
+          <h3 class="font-semibold text-gray-800 mb-4">健康档案</h3>
+          
+          <!-- 基础数据 -->
+          <div class="bg-gray-50 rounded-xl p-4 mb-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">身体基础数据</h4>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-white rounded-lg p-3">
+                <div class="text-xs text-gray-500">身高</div>
+                <div class="text-lg font-bold text-gray-800">172cm</div>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <div class="text-xs text-gray-500">体重</div>
+                <div class="text-lg font-bold text-gray-800">68kg</div>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <div class="text-xs text-gray-500">血压</div>
+                <div class="text-lg font-bold text-gray-800">130/85 mmHg</div>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <div class="text-xs text-gray-500">血糖</div>
+                <div class="text-lg font-bold text-gray-800">6.2 mmol/L</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 疾病史 -->
+          <div class="bg-gray-50 rounded-xl p-4 mb-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">疾病史</h4>
+            <div class="space-y-2">
+              <div class="bg-white rounded-lg p-3 flex items-center justify-between">
+                <span class="text-sm text-gray-800">高血压</span>
+                <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">需服药</span>
+              </div>
+              <div class="bg-white rounded-lg p-3 flex items-center justify-between">
+                <span class="text-sm text-gray-800">糖尿病</span>
+                <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">需服药</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 服用药物 -->
+          <div class="bg-gray-50 rounded-xl p-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">正在服用药物</h4>
+            <div class="space-y-2">
+              <div class="bg-white rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-sm font-medium text-gray-800">硝苯地平缓释片</div>
+                    <div class="text-xs text-gray-500">每日1次，每次1片</div>
+                  </div>
+                  <div class="text-xs text-green-600">降压药</div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-sm font-medium text-gray-800">二甲双胍</div>
+                    <div class="text-xs text-gray-500">每日2次，每次1片</div>
+                  </div>
+                  <div class="text-xs text-green-600">降糖药</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 注意事项详情 -->
+        <div id="notes" class="px-4 py-4 hidden">
+          <h3 class="font-semibold text-gray-800 mb-4">注意事项</h3>
+          
+          <!-- 医嘱 -->
+          <div class="bg-blue-50 rounded-xl p-4 mb-4">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </div>
+              <h4 class="text-sm font-medium text-blue-800">医嘱</h4>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-700">每日按时服药，不可擅自增减药量</p>
+                <p class="text-xs text-gray-400 mt-1">来源：张医生 · 2024-05-15</p>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-700">每周测量血压3次，记录在健康档案中</p>
+                <p class="text-xs text-gray-400 mt-1">来源：张医生 · 2024-05-15</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 日常注意 -->
+          <div class="bg-orange-50 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <h4 class="text-sm font-medium text-orange-800">日常注意</h4>
+            </div>
+            <div class="space-y-2">
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-700">饮食清淡，减少盐分摄入</p>
+                <p class="text-xs text-gray-400 mt-1">来源：家人 · 2024-05-20</p>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-700">每天散步30分钟，注意安全</p>
+                <p class="text-xs text-gray-400 mt-1">来源：家人 · 2024-05-20</p>
+              </div>
+              <div class="bg-white rounded-lg p-3">
+                <p class="text-sm text-gray-700">睡前泡脚15分钟，有助于睡眠</p>
+                <p class="text-xs text-gray-400 mt-1">来源：家人 · 2024-05-22</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 预约日历详情 -->
+        <div id="calendar" class="px-4 py-4 hidden">
+          <div class="flex items-center justify-between mb-4">
+            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h3 class="font-semibold text-gray-800">2024年6月</h3>
+            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          </div>
+          
+          <!-- 星期标题 -->
+          <div class="grid grid-cols-7 gap-1 mb-2">
+            <div class="text-center text-xs text-gray-500">日</div>
+            <div class="text-center text-xs text-gray-500">一</div>
+            <div class="text-center text-xs text-gray-500">二</div>
+            <div class="text-center text-xs text-gray-500">三</div>
+            <div class="text-center text-xs text-gray-500">四</div>
+            <div class="text-center text-xs text-gray-500">五</div>
+            <div class="text-center text-xs text-gray-500">六</div>
+          </div>
+          
+          <!-- 日历内容 -->
+          <div class="grid grid-cols-7 gap-1">
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">26</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">27</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">28</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">29</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">30</div>
+            <div class="h-12 flex items-center justify-center text-xs">1</div>
+            <div class="h-12 flex items-center justify-center text-xs">2</div>
+            <div class="h-12 flex items-center justify-center text-xs">3</div>
+            <div class="h-12 flex items-center justify-center text-xs">4</div>
+            <div class="h-12 flex items-center justify-center text-xs">5</div>
+            <div class="h-12 flex items-center justify-center text-xs">6</div>
+            <div class="h-12 flex items-center justify-center text-xs">7</div>
+            <div class="h-12 flex items-center justify-center text-xs">8</div>
+            <div class="h-12 flex items-center justify-center text-xs">9</div>
+            <div class="h-12 flex items-center justify-center text-xs calendar-day has-appointment status-confirmed">10</div>
+            <div class="h-12 flex items-center justify-center text-xs">11</div>
+            <div class="h-12 flex items-center justify-center text-xs">12</div>
+            <div class="h-12 flex items-center justify-center text-xs">13</div>
+            <div class="h-12 flex items-center justify-center text-xs">14</div>
+            <div class="h-12 flex items-center justify-center text-xs calendar-day has-appointment status-pending">15</div>
+            <div class="h-12 flex items-center justify-center text-xs">16</div>
+            <div class="h-12 flex items-center justify-center text-xs">17</div>
+            <div class="h-12 flex items-center justify-center text-xs">18</div>
+            <div class="h-12 flex items-center justify-center text-xs">19</div>
+            <div class="h-12 flex items-center justify-center text-xs">20</div>
+            <div class="h-12 flex items-center justify-center text-xs">21</div>
+            <div class="h-12 flex items-center justify-center text-xs">22</div>
+            <div class="h-12 flex items-center justify-center text-xs">23</div>
+            <div class="h-12 flex items-center justify-center text-xs">24</div>
+            <div class="h-12 flex items-center justify-center text-xs">25</div>
+            <div class="h-12 flex items-center justify-center text-xs">26</div>
+            <div class="h-12 flex items-center justify-center text-xs">27</div>
+            <div class="h-12 flex items-center justify-center text-xs">28</div>
+            <div class="h-12 flex items-center justify-center text-xs">29</div>
+            <div class="h-12 flex items-center justify-center text-xs">30</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">1</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">2</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">3</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">4</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">5</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">6</div>
+            <div class="h-12 flex items-center justify-center text-xs text-gray-300">7</div>
+          </div>
+
+          <!-- 图例 -->
+          <div class="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-gray-100">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 bg-yellow-400 rounded-full"></span>
+              <span class="text-xs text-gray-500">待确认</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+              <span class="text-xs text-gray-500">已确认</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 bg-gray-400 rounded-full"></span>
+              <span class="text-xs text-gray-500">已完成</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部占位 -->
+        <div class="h-20"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-20">
+    <div class="flex items-center justify-around py-2">
+      <button class="nav-tab active flex flex-col items-center gap-1 px-4 py-1" data-page="page-services">
+        <svg class="tab-icon w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        <span class="text-xs text-orange-500">服务</span>
+      </button>
+      <button class="nav-tab flex flex-col items-center gap-1 px-4 py-1" data-page="page-orders">
+        <svg class="tab-icon w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+        </svg>
+        <span class="text-xs text-gray-500">预约记录</span>
+      </button>
+      <button class="nav-tab flex flex-col items-center gap-1 px-4 py-1" data-page="page-profile">
+        <svg class="tab-icon w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+        <span class="text-xs text-gray-500">我的</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 预约弹窗 -->
+  <div class="modal-overlay fixed inset-0 bg-black/50 z-50 hidden" id="booking-modal">
+    <div class="modal-content absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[90vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white px-4 py-4 border-b border-gray-100 flex items-center justify-between z-10">
+        <h3 class="text-lg font-semibold text-gray-800">预约服务</h3>
+        <button class="close-modal w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="px-4 py-4 space-y-4">
+        <!-- 服务信息 -->
+        <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4" id="service-info">
+          <div class="flex gap-4">
+            <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
+              <span class="text-2xl" id="service-icon">🍽️</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-semibold text-gray-800 text-base" id="service-name">助餐服务</h4>
+              <p class="text-sm text-gray-500 mt-1" id="service-desc">送餐/堂食</p>
+              <div class="flex items-baseline gap-1 mt-2">
+                <span class="text-xl font-bold text-orange-600" id="service-price">¥20</span>
+                <span class="text-xs text-gray-400" id="service-unit">/次</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 选择日期 -->
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-2">选择日期</label>
+          <input type="date" class="w-full px-4 py-3 bg-gray-50 rounded-xl border-none outline-none focus:ring-2 focus:ring-orange-200">
+        </div>
+
+        <!-- 选择时间段 -->
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-2">选择时间段</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">09:00</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">10:00</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">11:30</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">14:00</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">15:30</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">16:30</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">18:00</button>
+            <button class="time-slot px-3 py-2.5 bg-gray-100 rounded-lg text-sm hover:bg-orange-100 transition">19:00</button>
+          </div>
+        </div>
+
+        <!-- 选择地址 -->
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-2">服务地址</label>
+          <div class="bg-gray-50 rounded-xl p-3">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <select class="flex-1 bg-transparent outline-none text-gray-700 text-sm">
+                <option value="">请选择服务地址</option>
+                <option value="1">幸福小区1号楼3单元502</option>
+                <option value="2">康乐家园2号楼1单元301</option>
+                <option value="3">阳光社区3号楼2单元601</option>
+                <option value="4">温馨家园1号楼4单元203</option>
+                <option value="5">养老服务中心（到店服务）</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 备注 -->
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-2">备注（选填）</label>
+          <textarea placeholder="如有特殊需求，请在此备注" rows="2" class="w-full px-4 py-3 bg-gray-50 rounded-xl border-none outline-none text-sm resize-none focus:ring-2 focus:ring-orange-200"></textarea>
+        </div>
+
+        <!-- 费用明细 -->
+        <div class="bg-gray-50 rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-gray-600">服务费用</span>
+            <span class="text-sm font-medium text-gray-800" id="fee-service">¥20</span>
+          </div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-gray-600">定金（30%）</span>
+            <span class="text-sm font-medium text-gray-800" id="fee-deposit">¥6</span>
+          </div>
+          <div class="flex items-center justify-between pt-3 border-t border-gray-200">
+            <span class="text-sm font-semibold text-gray-800">应付定金</span>
+            <span class="text-xl font-bold text-orange-600" id="fee-total">¥6</span>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <button class="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition shadow-lg shadow-orange-200">支付定金并下单</button>
+        <p class="text-xs text-center text-gray-400 pb-2">下单即表示同意《社区养老服务协议》</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 页面切换
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const pages = document.querySelectorAll('.page');
+    
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        navTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        const targetPage = tab.dataset.page;
+        pages.forEach(page => page.classList.add('hidden'));
+        document.getElementById(targetPage).classList.remove('hidden');
+      });
+    });
+
+    // 服务分类筛选
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    categoryTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        categoryTabs.forEach(t => {
+          t.classList.remove('active', 'bg-orange-500', 'text-white');
+          t.classList.add('bg-white', 'text-gray-600');
+        });
+        tab.classList.remove('bg-white', 'text-gray-600');
+        tab.classList.add('active', 'bg-orange-500', 'text-white');
+      });
+    });
+
+    // 订单状态筛选
+    const orderTabs = document.querySelectorAll('.order-tab');
+    orderTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        orderTabs.forEach(t => {
+          t.classList.remove('active', 'text-orange-500', 'border-orange-500');
+          t.classList.add('text-gray-500');
+        });
+        tab.classList.remove('text-gray-500');
+        tab.classList.add('active', 'text-orange-500', 'border-orange-500');
+      });
+    });
+
+    // 服务卡片点击
+    const serviceCards = document.querySelectorAll('.service-card');
+    const bookingModal = document.getElementById('booking-modal');
+    const closeModal = document.querySelector('.close-modal');
+    const serviceIconEl = document.getElementById('service-icon');
+    const serviceNameEl = document.getElementById('service-name');
+    const serviceDescEl = document.getElementById('service-desc');
+    const servicePriceEl = document.getElementById('service-price');
+    const serviceUnitEl = document.getElementById('service-unit');
+    const feeServiceEl = document.getElementById('fee-service');
+    const feeDepositEl = document.getElementById('fee-deposit');
+    const feeTotalEl = document.getElementById('fee-total');
+    
+    const serviceIcons = {
+      '助餐服务': '🍽️', '助浴服务': '🛁', '助洁服务': '🧹', '助行服务': '🚶',
+      '日间照料': '🏠', '短期托养': '🏨', '衣物清洗': '🧺', '家电维修': '🔧',
+      '适老化改造': '🏡', '血压血糖检测': '🩺', '常见病诊疗': '👩⚕️', '康复训练': '💪',
+      '失能护理': '🛏️', '健康档案': '📋', '定期体检': '🏥', '用药提醒': '💊',
+      '慢性病指导': '📊', '认知症筛查': '🧠', '书法绘画课': '🎨', '手工课': '✂️',
+      '唱歌舞蹈': '🎤', '棋牌活动': '🀄', '节日活动': '🎉', '智能手机培训': '📱',
+      '健康讲座': '📚', '法律讲座': '⚖️', '茶话会': '🍵', '心理疏导': '💝',
+      '失独关怀': '🤝', '空巢关怀': '🏠', '法律咨询': '⚖️', '生命教育': '🌸',
+      '互助小组': '👥', '紧急呼叫': '📞', '应急响应': '🚑', '烟感报警': '🔔',
+      '燃气报警': '💨', '防走失定位': '📍', '轮椅租赁': '♿', '拐杖租赁': '🦯',
+      '无障碍车辆': '🚐', '助行器租赁': '🚶'
+    };
+    
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const serviceData = JSON.parse(card.dataset.service);
+        serviceIconEl.textContent = serviceIcons[serviceData.name] || '📋';
+        serviceNameEl.textContent = serviceData.name;
+        serviceDescEl.textContent = serviceData.desc;
+        if (serviceData.price === 0) {
+          servicePriceEl.textContent = '免费';
+          serviceUnitEl.textContent = '';
+        } else {
+          servicePriceEl.textContent = `¥${serviceData.price}`;
+          serviceUnitEl.textContent = `/${serviceData.duration}`;
+        }
+        feeServiceEl.textContent = serviceData.price === 0 ? '¥0' : `¥${serviceData.price}`;
+        const deposit = Math.round(serviceData.price * 0.3);
+        feeDepositEl.textContent = `¥${deposit}`;
+        feeTotalEl.textContent = `¥${deposit}`;
+        bookingModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    // 关闭预约弹窗
+    closeModal.addEventListener('click', () => {
+      bookingModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+
+    // 时间段选择
+    const timeSlots = document.querySelectorAll('.time-slot');
+    timeSlots.forEach(slot => {
+      slot.addEventListener('click', () => {
+        timeSlots.forEach(s => s.classList.remove('bg-orange-500', 'text-white'));
+        slot.classList.add('bg-orange-500', 'text-white');
+      });
+    });
+
+    // 健康档案展开
+    const healthBtn = document.querySelector('.bg-gradient-to-r.from-green-50');
+    const healthRecord = document.getElementById('health-record');
+    healthBtn.addEventListener('click', () => {
+      healthRecord.classList.toggle('hidden');
+      document.getElementById('notes').classList.add('hidden');
+      document.getElementById('calendar').classList.add('hidden');
+    });
+
+    // 注意事项展开
+    const notesBtn = document.querySelector('.bg-gradient-to-r.from-blue-50');
+    const notes = document.getElementById('notes');
+    notesBtn.addEventListener('click', () => {
+      notes.classList.toggle('hidden');
+      document.getElementById('health-record').classList.add('hidden');
+      document.getElementById('calendar').classList.add('hidden');
+    });
+
+    // 预约日历展开
+    const calendarBtn = document.querySelector('.bg-gradient-to-r.from-purple-50');
+    const calendar = document.getElementById('calendar');
+    calendarBtn.addEventListener('click', () => {
+      calendar.classList.toggle('hidden');
+      document.getElementById('health-record').classList.add('hidden');
+      document.getElementById('notes').classList.add('hidden');
+    });
+
+    // 再次预约
+    const reorderBtns = document.querySelectorAll('.reorder-btn');
+    reorderBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navTabs[0].click();
+      });
+    });
+  </script>
+</body>
+</html>

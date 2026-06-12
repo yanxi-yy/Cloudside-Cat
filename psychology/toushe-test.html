@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>心理投射测验 | 人格探索与潜意识联想</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5efe9;
+            color: #2c2b2a;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fffef7;
+            border-radius: 48px;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.15);
+            overflow: hidden;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5e2a2a, #b97f44);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .sub {
+            border-left: 5px solid #b97f44;
+            padding-left: 1.2rem;
+            color: #4a3b2c;
+            margin: 1rem 0 2rem 0;
+            font-style: italic;
+        }
+        .theory {
+            background: #faf3e8;
+            border-radius: 32px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #4e3e2e;
+        }
+        .stimulus-card {
+            background: #ffffff;
+            border-radius: 32px;
+            margin-bottom: 2.5rem;
+            border: 1px solid #ede0d2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+        .stimulus-header {
+            background: #fef3e6;
+            padding: 0.8rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #e7cfb5;
+            color: #7a4c2c;
+        }
+        .stimulus-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            align-items: flex-start;
+        }
+        .image-area {
+            flex: 1;
+            min-width: 180px;
+            background: #fefaf5;
+            border-radius: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .image-mock {
+            width: 100%;
+            max-width: 260px;
+            height: auto;
+            background: radial-gradient(circle at 30% 40%, #ded7cc, #cbb99f);
+            border-radius: 28px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            aspect-ratio: 1 / 1;
+            color: #4e3620;
+            font-weight: 500;
+        }
+        .inkblot {
+            font-size: 4rem;
+            letter-spacing: 8px;
+        }
+        .question-area {
+            flex: 2;
+            min-width: 240px;
+        }
+        .question-area textarea {
+            width: 100%;
+            border-radius: 24px;
+            border: 1px solid #e2cfbc;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: #fefcf9;
+            transition: 0.1s;
+        }
+        .question-area textarea:focus {
+            outline: none;
+            border-color: #b97f44;
+            box-shadow: 0 0 0 2px #f0ddcc;
+        }
+        .prompt {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #8b5a2e;
+        }
+        .response-save {
+            margin-top: 12px;
+            text-align: right;
+        }
+        .btn-save {
+            background: #d9c2a7;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: #3e2a1a;
+            transition: 0.2s;
+        }
+        .btn-save:hover {
+            background: #c4aa8b;
+        }
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 1rem 0 2rem;
+        }
+        .btn-primary {
+            background: #8b5a2e;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-secondary {
+            background: #e7d9cc;
+            color: #4f321b;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .result-box {
+            background: #faf0e6;
+            border-radius: 32px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            display: none;
+            border-left: 6px solid #b97f44;
+        }
+        .result-box.show {
+            display: block;
+            animation: fade 0.4s;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            margin-top: 2rem;
+            color: #ad927b;
+        }
+        hr {
+            margin: 1rem 0;
+            border-color: #eedfcb;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 1.2rem; }
+            .stimulus-body { flex-direction: column; }
+        }
+        .note {
+            background: #fff2e0;
+            border-radius: 24px;
+            padding: 0.7rem 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌙 投射式人格测验</h1>
+    <div class="sub">自由联想 · 故事建构 · 潜意识的镜子</div>
+    <div class="theory">
+        📖 <strong>心理测量学 · 投射测验原理</strong><br>
+        基于精神分析及投射假说：当个体面对模糊、非结构化的刺激（如图形、未完成故事），会不自觉地将内心冲突、动机、人格特征“投射”到反应中。类似罗夏墨迹测验、主题统觉测验(TAT)和画人测验。本测验融合抽象图形与情境线索，请根据第一反应尽情描述，无对错之分。
+    </div>
+    <div class="note">
+        💡 指导语：下面呈现5幅模糊的刺激画面。每张图没有标准答案，请仔细观察，然后针对引导问题写出你最真实、即时的联想或故事。越详细越有助于自我探索。
+    </div>
+
+    <div id="stimuliContainer">
+        <!-- 题目将通过js动态生成，保留可保存功能 -->
+    </div>
+
+    <div class="user-info" style="background: #faf3e8; border-radius: 24px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;">
+        <label style="font-weight: 600; color: #4a3b2c; margin-right: 10px;">👤 您的昵称：</label>
+        <input type="text" id="userNameInput" placeholder="请输入昵称（可选）" style="padding: 8px 16px; border-radius: 20px; border: 1px solid #e2cfbc; background: white; font-size: 0.9rem; width: 200px;">
+    </div>
+
+    <div class="action-bar">
+        <button class="btn-secondary" id="clearAllBtn">🔄 清空所有回答</button>
+        <button class="btn-primary" id="submitBtn" style="background: #5e7b5e;">🚀 提交并获取分析</button>
+        <button class="btn-primary" id="interpretBtn">✨ 生成投射解读指引 ✨</button>
+    </div>
+
+    <div id="resultPanel" class="result-box">
+        <h3>📜 投射测验 · 个人反应解读框架</h3>
+        <div id="interpretationContent"></div>
+        <div class="note" style="margin-top: 12px;">
+            ⚠️ 重要提醒：投射测验的解释需结合临床访谈与专业背景，此处为根据心理测量学提供的分析维度和常见投射象征，帮助你自我觉察。切勿贴标签，建议与心理咨询师共同探讨。
+        </div>
+        <button id="copyAnswersBtn" class="btn-save" style="margin-top: 10px;">📋 复制我的回答</button>
+    </div>
+    <footer>投射测验 · 灵感源自主题统觉测验(TAT)及墨迹技术 | 仅供心理教学与自我探索</footer>
+</div>
+
+<script>
+    // ---------- 5 个投射刺激材料（含抽象图形/模糊场景描述 + 引导问题）----------
+    // 由于无法展示真实图片，用象征性墨迹风格及插画描述替代，类似罗夏风格和主题统觉。
+    const stimuli = [
+        {
+            id: 1,
+            title: "墨迹 · 双翼之影",
+            visual: "对称的不规则墨迹，形似蝴蝶、面具或展翅的鸟类，中间有空洞感。",
+            prompt: "你看到的这个墨迹像什么？它可能代表什么情景或情绪？请描述一个简短的故事或画面。",
+            additional: "它给你的感觉是宁静、紧张还是神秘？"
+        },
+        {
+            id: 2,
+            title: "孤独的窗景",
+            visual: "一张灰蓝色的抽象画面，仿佛一扇半开的窗户，窗外有模糊的光影与曲线的树影。",
+            prompt: "想象你是画面中的人，你正在透过窗户看到什么？你的感受是什么？请编织一个简短的片段。",
+            additional: "窗外是否有某人在等待？或你在期待什么事件？"
+        },
+        {
+            id: 3,
+            title: "山巅与歧路",
+            visual: "粗犷的线条构成一条分岔小径，远处是崇山峻岭，一侧有隐约的城镇剪影。",
+            prompt: "一位旅人站在分岔路口。你认为他为何在此？他会选择哪条路？最终会发生什么？",
+            additional: "请为旅人的内心冲突和最终结局赋予意义。"
+        },
+        {
+            id: 4,
+            title: "水中倒影",
+            visual: "平静的湖面映出一张模糊的人脸轮廓，周围漂浮着落叶和星点光斑。",
+            prompt: "倒影中的人像可能是谁？你看到水中的面孔有着怎样的表情？如果水能说话，它会传达什么？",
+            additional: "试着描述这个场景背后的隐喻。"
+        },
+        {
+            id: 5,
+            title: "未完成的仪式",
+            visual: "抽象的圆形阵，中间有未点燃的蜡烛、奇怪的符号与飘动的布条，氛围庄重。",
+            prompt: "这是什么仪式？谁在参与？仪式的目的是什么？请自由编织一个神话或现实故事。",
+            additional: "你感到神圣、恐惧还是希望？"
+        }
+    ];
+
+    // 存储用户每次输入的回答
+    let responses = {
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: ""
+    };
+
+    // 渲染题目
+    function renderStimuli() {
+        const container = document.getElementById('stimuliContainer');
+        container.innerHTML = '';
+        stimuli.forEach(stim => {
+            const card = document.createElement('div');
+            card.className = 'stimulus-card';
+            card.innerHTML = `
+                <div class="stimulus-header">
+                    🎭 刺激图 ${stim.id} · ${stim.title}
+                </div>
+                <div class="stimulus-body">
+                    <div class="image-area">
+                        <div class="image-mock">
+                            <div class="inkblot">
+                                ${stim.id === 1 ? '🦋🌀' : stim.id === 2 ? '🪟🌙' : stim.id === 3 ? '⛰️🛤️' : stim.id === 4 ? '💧👤' : '✨🕯️'}
+                            </div>
+                            <div style="font-size: 0.7rem; margin-top: 6px;">【抽象投射刺激】</div>
+                            <div style="font-size:0.65rem; margin-top: 4px;">${stim.visual}</div>
+                        </div>
+                    </div>
+                    <div class="question-area">
+                        <div class="prompt">📌 ${stim.prompt}</div>
+                        <div class="prompt" style="font-size:0.8rem;">🔍 补充提示：${stim.additional}</div>
+                        <textarea id="response_${stim.id}" rows="4" placeholder="请在这里写下你的联想、故事或感受…… 没有限制，越详细越能反映内心投射。" style="margin-top: 8px;"></textarea>
+                        <div class="response-save">
+                            <button class="btn-save" data-id="${stim.id}">💾 暂存回答</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        // 绑定保存按钮及加载已有数据
+        for (let stim of stimuli) {
+            const textarea = document.getElementById(`response_${stim.id}`);
+            if (responses[stim.id]) {
+                textarea.value = responses[stim.id];
+            }
+            const saveBtn = document.querySelector(`button[data-id="${stim.id}"]`);
+            if (saveBtn) {
+                saveBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = parseInt(saveBtn.getAttribute('data-id'));
+                    const answer = document.getElementById(`response_${id}`).value;
+                    responses[id] = answer;
+                    showToast(`第${id}题回答已保存（本地）`);
+                });
+            }
+            // 自动保存当失去焦点？可选，增加体验
+            textarea.addEventListener('blur', (e) => {
+                const id = stim.id;
+                responses[id] = e.target.value;
+            });
+            textarea.addEventListener('input', (e) => {
+                responses[id] = e.target.value;
+            });
+        }
+    }
+
+    function showToast(msg) {
+        // 简单模拟提醒
+        const toast = document.createElement('div');
+        toast.innerText = msg;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = '#4a3727';
+        toast.style.color = 'white';
+        toast.style.padding = '6px 18px';
+        toast.style.borderRadius = '40px';
+        toast.style.fontSize = '0.8rem';
+        toast.style.zIndex = '1000';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 1800);
+    }
+
+    // 清空所有回答
+    function clearAllResponses() {
+        if (confirm('确定清空所有答题记录吗？清空后无法恢复。')) {
+            for (let i = 1; i <= 5; i++) {
+                responses[i] = "";
+                const textarea = document.getElementById(`response_${i}`);
+                if (textarea) textarea.value = "";
+            }
+            showToast("所有回答已清空");
+        }
+    }
+
+    // 投射测验解读框架 (基于经典投射分析法，分析主题、人物、情感基调、冲突等)
+    function generateInterpretation() {
+        // 收集所有回答文本
+        const answers = [];
+        for (let i = 1; i <= 5; i++) {
+            let text = responses[i] || "";
+            if (text.trim() === "") answers.push(`(未作答)`);
+            else answers.push(text);
+        }
+        // 分析维度: 内容主题、情绪倾向、角色认同、冲突解决方式、象征意义
+        let analysis = "";
+        analysis += "<strong>✨ 投射内容概览（基于您的联想故事）</strong><br><br>";
+        
+        // 判断每个刺激的回答丰富度
+        let hasRich = answers.some(a => a.length > 30 && a !== "(未作答)");
+        if (!hasRich && answers.filter(a => a !== "(未作答)").length < 3) {
+            analysis += "⚠️ 您回答的细节较少，投射分析需要更丰富的联想。建议重新仔细观看刺激图，写出更完整的场景与故事，能获得更有意义的自我觉察。<br><br>";
+        } else {
+            analysis += "根据您的回答，提取出以下投射特征（基于TAT及主题统觉编码思路）：<br><ul>";
+            // 简单关键词识别 (情绪、人物、结局)
+            let combined = answers.join(" ");
+            if (combined.match(/孤独|寂寞|独自|一个人|没有|失落/g)) analysis += "<li>🔹 情感基调中存在孤独、分离或人际疏离的意象，可能反映对联结的渴望或独立倾向。</li>";
+            if (combined.match(/帮助|救助|拯救|友情|拥抱|爱|温暖/g)) analysis += "<li>🔸 有较强的人际支持或利他主题，投射出友善、依赖或希望被接纳的需要。</li>";
+            if (combined.match(/恐惧|害怕|惊恐|紧张|威胁|黑暗/g)) analysis += "<li>🔹 存在明显焦虑或恐惧象征，可能揭示潜在的压力源或未解决的冲突。</li>";
+            if (combined.match(/探索|寻找|踏上|前进|旅程|冒险/g)) analysis += "<li>🔸 呈现进取或探索动机，可能反映你对未来目标或自我成长的渴望。</li>";
+            if (combined.match(/失败|犹豫|纠结|不知道选|徘徊/g)) analysis += "<li>🔹 抉择困难与内心冲突反复出现，可能显示决策风格或对责任的回避/焦虑。</li>";
+            if (combined.match(/胜利|成功|结局美好|圆满|希望|光芒/g)) analysis += "<li>🔸 乐观倾向或成功预期较强，通常反映自信或积极应对模式。</li>";
+            if (combined.match(/家人|父母|孩子|祖母/g)) analysis += "<li>🔹 原生家庭或亲密关系频繁在故事中出现，显示家庭动力对您有重大影响。</li>";
+            analysis += "</ul><br>";
+        }
+        
+        analysis += "<strong>📖 各刺激维度的投射解读方向（供参考）</strong><br>";
+        analysis += "<ul><li><strong>图1·墨迹双翼：</strong> 通常反映自我认知、内在潜意识的象征。对称性代表整合或矛盾，回答中所描述的形态（如飞翔、被困、面具）可能映射自我形象或防御机制。</li>";
+        analysis += "<li><strong>图2·窗景：</strong> 投射出对外界的看法、期望与隔离感。描述中的窗外对象、情绪（期待/空虚/害怕）指向社交动力与对未来的开放程度。</li>";
+        analysis += "<li><strong>图3·歧路旅人：</strong> 经典主题统觉情境——抉择与人生方向。旅人的决策依据、路上的障碍或同行者，折射出你面对重大选择时的内在动机和冲突解决风格。</li>";
+        analysis += "<li><strong>图4·水中倒影：</strong> 自我认同与深层情感的投射。水中的面孔表情、“对话内容”揭示自尊、被压抑情感或理想自我与现实的距离。</li>";
+        analysis += "<li><strong>图5·未完成仪式：</strong> 象征精神追求、人生意义或转变的渴求。仪式的性质（庄重/诡异）和参与者的情绪，反映对信仰、秩序或变革的态度。</li></ul>";
+        
+        analysis += "<br><strong>🌟 综合投射假设：</strong> 根据您构建的故事连贯性、角色行动力、冲突结局，可以觉察到当前心理动力状态。若多次出现未能解决的紧张或被迫害意象，可能提示内在焦虑；反复出现帮助与救赎则显示亲和动机。建议记录下这些联想，与心理咨询师一同探讨，促进自我成长。";
+        
+        // 添加原始回答摘要
+        analysis += "<hr><strong>📝 您的原始联想摘录：</strong><br>";
+        for (let i = 0; i < stimuli.length; i++) {
+            let respText = answers[i];
+            let short = respText.length > 100 ? respText.substring(0, 100) + "…" : respText;
+            analysis += `<div style="margin-top: 8px;"><strong>刺激${i+1} (${stimuli[i].title})</strong>： ${short || '未填写'}</div>`;
+        }
+        analysis += "<div style='margin-top:12px;'><em>※ 投射测验的解释需结合专业人士，以上为心理测量学提供的启发式框架。</em></div>";
+        
+        return analysis;
+    }
+
+    function showInterpretation() {
+        const panel = document.getElementById('resultPanel');
+        const contentDiv = document.getElementById('interpretationContent');
+        const interpretationHtml = generateInterpretation();
+        contentDiv.innerHTML = interpretationHtml;
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 复制所有回答内容
+    function copyAllAnswers() {
+        let answersText = "投射测验个人回答记录\n\n";
+        for (let i = 1; i <= 5; i++) {
+            let ans = responses[i] || "【未作答】";
+            answersText += `【刺激${i}·${stimuli[i-1].title}】\n${ans}\n\n`;
+        }
+        navigator.clipboard.writeText(answersText).then(() => {
+            showToast("✅ 回答已复制到剪贴板");
+        }).catch(() => alert("无法复制，请手动选择"));
+    }
+
+    // 初始化加载保存的答案（localstorage可选，简单内存存储）
+    function loadFromStorage() {
+        const stored = localStorage.getItem("projective_test_responses");
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                for (let key in parsed) {
+                    if (responses[key] !== undefined) responses[key] = parsed[key];
+                }
+            } catch(e) {}
+        }
+    }
+    function saveToStorage() {
+        localStorage.setItem("projective_test_responses", JSON.stringify(responses));
+    }
+    // 自动存储和加载
+    window.addEventListener('beforeunload', () => {
+        saveToStorage();
+    });
+    
+    function bindEvents() {
+        document.getElementById('clearAllBtn').addEventListener('click', clearAllResponses);
+        document.getElementById('interpretBtn').addEventListener('click', showInterpretation);
+        document.getElementById('copyAnswersBtn').addEventListener('click', copyAllAnswers);
+    }
+
+    // 实时保存任何变更
+    function autosave() {
+        for (let i = 1; i <= 5; i++) {
+            const txt = document.getElementById(`response_${i}`);
+            if (txt) {
+                txt.addEventListener('input', (e) => {
+                    responses[i] = e.target.value;
+                    saveToStorage();
+                });
+            }
+        }
+    }
+
+    // Supabase 配置
+    const SUPABASE_URL = 'https://txrrjbaqfkizavmylgyk.supabase.co/rest/v1/';
+    const SUPABASE_KEY = 'sb_publishable_AJJ6M3pUsmCEsd4vGu_Flw_6wkwn';
+
+    // 关键词分析逻辑
+    function analyzeAnswers(answers) {
+        const combinedText = answers.join(' ');
+        
+        // 负面情绪关键词
+        const negativeKeywords = ['孤独', '黑暗', '悲伤', '痛苦', '绝望', '失落', '恐惧', '害怕', '焦虑', '无助', '寂寞', '忧郁', '空虚', '压抑', '沮丧'];
+        
+        // 正面情绪关键词
+        const positiveKeywords = ['阳光', '朋友', '快乐', '幸福', '温暖', '希望', '美好', '爱', '喜悦', '光明', '轻松', '愉快', '和谐', '积极', '开朗'];
+        
+        let negativeCount = 0;
+        let positiveCount = 0;
+        
+        negativeKeywords.forEach(keyword => {
+            if (combinedText.includes(keyword)) negativeCount++;
+        });
+        
+        positiveKeywords.forEach(keyword => {
+            if (combinedText.includes(keyword)) positiveCount++;
+        });
+        
+        // 根据关键词匹配返回分析结果
+        if (negativeCount >= 3 || (negativeCount > positiveCount && negativeCount >= 2)) {
+            return '你可能最近感到压力较大，内心有些疲惫。投射测验显示你需要更多的关爱和支持，不妨给自己一些放松的时间，与亲友多交流。';
+        } else if (positiveCount >= 3 || (positiveCount > negativeCount && positiveCount >= 2)) {
+            return '你的心态积极开放，充满正能量。投射测验显示你具有良好的心理状态和社交能力，继续保持这种积极的生活态度。';
+        } else {
+            return '你的内心世界丰富多元，有着复杂而细腻的情感。投射测验显示你是一个善于思考、富有想象力的人，保持自我探索将带来更多成长。';
+        }
+    }
+
+    // 提交到 Supabase
+    async function submitToSupabase() {
+        const userName = document.getElementById('userNameInput').value || '匿名用户';
+        const answers = [];
+        
+        for (let i = 1; i <= 5; i++) {
+            answers.push(responses[i] || '');
+        }
+        
+        // 检查是否有回答
+        const hasAnswers = answers.some(a => a.trim() !== '');
+        if (!hasAnswers) {
+            alert('请至少回答一个问题后再提交！');
+            return;
+        }
+        
+        const analysisResult = analyzeAnswers(answers);
+        
+        const data = {
+            user_name: userName,
+            answers: answers,
+            analysis_result: analysisResult,
+            created_at: new Date().toISOString()
+        };
+        
+        try {
+            const response = await fetch(`${SUPABASE_URL}/test_results`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                showToast('✅ 提交成功！');
+                displayAnalysisResult(analysisResult, answers);
+            } else {
+                const error = await response.json();
+                console.error('提交失败:', error);
+                // 即使提交失败也显示分析结果
+                showToast('⚠️ 保存失败，但分析功能正常');
+                displayAnalysisResult(analysisResult, answers);
+            }
+        } catch (error) {
+            console.error('网络错误:', error);
+            // 网络错误时也显示分析结果
+            showToast('⚠️ 网络异常，但分析功能正常');
+            displayAnalysisResult(analysisResult, answers);
+        }
+    }
+
+    // 显示分析结果
+    function displayAnalysisResult(analysisResult, answers) {
+        const panel = document.getElementById('resultPanel');
+        const contentDiv = document.getElementById('interpretationContent');
+        
+        let html = `
+            <strong>🎯 投射测试分析结果</strong><br><br>
+            <div style="background: #fffef7; border-radius: 16px; padding: 1rem; margin: 1rem 0; font-size: 1.1rem; line-height: 1.6;">
+                💬 ${analysisResult}
+            </div>
+            <hr>
+            <strong>📝 你的回答记录：</strong><br>
+        `;
+        
+        for (let i = 0; i < answers.length; i++) {
+            html += `
+                <div style="margin-top: 10px; padding: 0.5rem; background: #faf0e6; border-radius: 12px;">
+                    <strong>图片${i+1}：</strong><br>
+                    ${answers[i] || '未作答'}
+                </div>
+            `;
+        }
+        
+        contentDiv.innerHTML = html;
+        panel.classList.add('show');
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function init() {
+        loadFromStorage();
+        renderStimuli();
+        bindEvents();
+        autosave();
+        // 将现有responses填充
+        for (let i = 1; i <= 5; i++) {
+            const ta = document.getElementById(`response_${i}`);
+            if (ta && responses[i]) ta.value = responses[i];
+        }
+        
+        // 绑定提交按钮事件
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', submitToSupabase);
+        }
+    }
+    init();
+</script>
+</body>
+</html>

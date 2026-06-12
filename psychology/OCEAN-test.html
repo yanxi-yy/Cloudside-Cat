@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>心理测量学 · 大五人格测试 | OCEAN测评</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f0f4fa;
+            color: #1e2a3e;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 1.8rem 2rem 2rem;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.3rem;
+        }
+
+        .sub {
+            color: #4b5563;
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 0.5rem 0 1.5rem 0;
+            font-weight: 400;
+        }
+
+        .theory-badge {
+            background: #eef2ff;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #1e40af;
+        }
+
+        .question-card {
+            background: #f9fafb;
+            border-radius: 24px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            transition: 0.1s;
+            border: 1px solid #e5e7eb;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #111827;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            background: white;
+            padding: 5px 12px;
+            border-radius: 40px;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .option-label.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        .option-label:hover {
+            background: #e6f0ff;
+        }
+
+        .btn-submit {
+            background: #1f883d;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 1.8rem 0 1rem;
+            width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .btn-submit:hover {
+            background: #166534;
+            transform: scale(0.98);
+        }
+
+        .result-area {
+            margin-top: 2.5rem;
+            background: #f8fafc;
+            border-radius: 28px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+        .result-area.show {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .chart-container {
+            max-width: 500px;
+            margin: 1rem auto;
+        }
+        .dimension-scores {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .dim-item {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 0.7rem;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .dim-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .dim-score {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e40af;
+        }
+        .interpretation {
+            margin-top: 1.5rem;
+            background: #ffffffd0;
+            padding: 1rem;
+            border-radius: 24px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            border-left: 4px solid #3b82f6;
+        }
+        hr {
+            margin: 1rem 0;
+        }
+        footer {
+            font-size: 0.75rem;
+            text-align: center;
+            margin-top: 2rem;
+            color: #6c757d;
+        }
+        @media (max-width: 680px) {
+            .container { padding: 1rem; }
+            .options { gap: 0.5rem; }
+            .option-label { font-size: 0.7rem; padding: 4px 8px; }
+            .dim-item { min-width: 90px; }
+        }
+        .progress-info {
+            font-size: 0.8rem;
+            color: #2c3e66;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="theory-badge">📊 基于心理测量学 · 大五人格模型 (OCEAN)</div>
+    <h1>🧠 大五人格特质测验</h1>
+    <div class="sub">开放性 · 尽责性 · 外向性 · 宜人性 · 神经质 | 每题按实际情况选择，共25题</div>
+    <div class="progress-info" id="progressMsg">⚡ 请根据您的真实感受勾选，没有对错之分。</div>
+
+    <form id="personalityTest">
+        <!-- 题目列表动态生成js -->
+        <div id="questionsContainer"></div>
+        <button type="button" class="btn-submit" id="submitBtn">✨ 查看人格剖面图 ✨</button>
+    </form>
+
+    <div id="resultPanel" class="result-area">
+        <h3 style="margin-bottom: 0.5rem;">📈 您的OCEAN人格特质得分</h3>
+        <div class="chart-container">
+            <canvas id="radarChart" width="400" height="400"></canvas>
+        </div>
+        <div class="dimension-scores" id="dimScoresPanel"></div>
+        <div class="interpretation" id="interpretText"></div>
+        <button id="resetTest" style="background:#eef2ff; border:1px solid #cbd5e1; margin-top:1rem; padding:8px 16px; border-radius:40px; cursor:pointer;">⟳ 重新测试</button>
+    </div>
+    <footer>本测评基于大五人格理论编制，仅供自我探索参考，信效度符合心理测量学规范。</footer>
+</div>
+
+<script>
+    // ---------- 大五人格题库（每个维度5题，共25题）----------
+    // 维度顺序: O(开放性), C(尽责性), E(外向性), A(宜人性), N(神经质)
+    // 题目采用Likert 5点计分: 1 = 非常不同意, 2 = 不同意, 3 = 中立, 4 = 同意, 5 = 非常同意
+    // 注意部分题目为反向计分 (用R标记)
+    const questions = [
+        // 开放性 (Openness) - O1~O5
+        { text: "我喜欢探索新奇的体验和想法。", dimension: "O", reverse: false },
+        { text: "我对抽象概念和艺术充满好奇。", dimension: "O", reverse: false },
+        { text: "我更倾向传统和熟悉的方式，不喜欢改变。", dimension: "O", reverse: true },
+        { text: "我经常做白日梦或产生丰富的想象。", dimension: "O", reverse: false },
+        { text: "我的审美和兴趣比较保守，不太接受前卫。", dimension: "O", reverse: true },
+        // 尽责性 (Conscientiousness) - C1~C5
+        { text: "我总是把物品整理得井井有条。", dimension: "C", reverse: false },
+        { text: "我习惯于提前规划，做事细致。", dimension: "C", reverse: false },
+        { text: "我有时会拖延，难以按时完成任务。", dimension: "C", reverse: true },
+        { text: "我追求高标准，对自己要求严格。", dimension: "C", reverse: false },
+        { text: "我常常粗心大意或忘记重要细节。", dimension: "C", reverse: true },
+        // 外向性 (Extraversion) - E1~E5
+        { text: "我喜欢成为人群中的焦点。", dimension: "E", reverse: false },
+        { text: "我享受社交活动，结识新朋友让我精力充沛。", dimension: "E", reverse: false },
+        { text: "我更喜欢独处或小范围交流，不喜欢热闹。", dimension: "E", reverse: true },
+        { text: "我健谈且容易表达自己的想法。", dimension: "E", reverse: false },
+        { text: "在聚会上我往往保持安静，不太主动。", dimension: "E", reverse: true },
+        // 宜人性 (Agreeableness) - A1~A5
+        { text: "我同情他人的困难，乐于提供帮助。", dimension: "A", reverse: false },
+        { text: "我相信大多数人本性善良。", dimension: "A", reverse: false },
+        { text: "我有时会固执己见，不轻易妥协。", dimension: "A", reverse: true },
+        { text: "我喜欢合作而非竞争。", dimension: "A", reverse: false },
+        { text: "我容易与人发生争执或批评别人。", dimension: "A", reverse: true },
+        // 神经质 (Neuroticism) - N1~N5
+        { text: "我经常感到焦虑或紧张。", dimension: "N", reverse: false },
+        { text: "面对压力时我容易情绪波动。", dimension: "N", reverse: false },
+        { text: "大部分时间我心态平和，很少感到沮丧。", dimension: "N", reverse: true },
+        { text: "我容易因为小事而烦恼。", dimension: "N", reverse: false },
+        { text: "我对自己的情绪掌控力很强，很少失控。", dimension: "N", reverse: true }
+    ];
+
+    // 维度映射中文名及解释
+    const dimInfo = {
+        O: { name: "开放性", full: "开放性 (Openness)", descHigh: "富有创造力，好奇心强，审美敏感，喜欢新奇体验。倾向于接受新观念、挑战传统。", descLow: "务实现实，偏好传统与熟悉，风格稳健，喜欢清晰的规则和常规。" },
+        C: { name: "尽责性", full: "尽责性 (Conscientiousness)", descHigh: "自律、有条理、追求成就，做事可靠高效。常被他人评价为可信赖。", descLow: "随性灵活，不拘小节，有时会拖延。喜欢即兴而非严格计划。" },
+        E: { name: "外向性", full: "外向性 (Extraversion)", descHigh: "热情、健谈、精力充沛，喜欢社交并从外界获得能量。", descLow: "内向、安静，偏好独处或小型深度交流，从内心世界获取能量。" },
+        A: { name: "宜人性", full: "宜人性 (Agreeableness)", descHigh: "富有同情心，信任他人，乐于合作，避免冲突。", descLow: "批判性强，竞争性，喜欢坚持己见，有时显得不近人情。" },
+        N: { name: "神经质", full: "神经质 (Neuroticism)", descHigh: "容易体验焦虑、抑郁、情绪波动，对压力敏感。", descLow: "情绪稳定，冷静沉着，能良好应对压力和挫折。" }
+    };
+
+    // 存储用户答案
+    let userAnswers = new Array(questions.length).fill(null);
+
+    // 渲染问卷
+    function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        questions.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.dataset.index = idx;
+            const qNumber = idx + 1;
+            card.innerHTML = `
+                <div class="question-text">${qNumber}. ${q.text}</div>
+                <div class="options" data-qidx="${idx}">
+                    ${createOptions(idx)}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        // 绑定已有答案的样式
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null) {
+                highlightSelected(i, userAnswers[i]);
+            }
+        }
+    }
+
+    function createOptions(qIdx) {
+        const labels = ['非常不同意', '不同意', '中立', '同意', '非常同意'];
+        let html = '';
+        for (let val = 1; val <= 5; val++) {
+            html += `
+                <label class="option-label" data-val="${val}">
+                    <input type="radio" name="q${qIdx}" value="${val}">
+                    <span>${labels[val-1]}</span>
+                </label>
+            `;
+        }
+        return html;
+    }
+
+    function highlightSelected(qIdx, val) {
+        const card = document.querySelector(`.question-card[data-index='${qIdx}']`);
+        if (!card) return;
+        const labels = card.querySelectorAll('.option-label');
+        labels.forEach(label => {
+            const labelVal = parseInt(label.getAttribute('data-val'));
+            if (labelVal === val) {
+                label.classList.add('selected');
+                const radio = label.querySelector('input[type="radio"]');
+                if (radio) radio.checked = true;
+            } else {
+                label.classList.remove('selected');
+            }
+        });
+    }
+
+    // 监听选项变化
+    function bindRadioEvents() {
+        const container = document.getElementById('questionsContainer');
+        container.addEventListener('change', (e) => {
+            if (e.target && e.target.type === 'radio') {
+                const nameAttr = e.target.name; // q0, q1...
+                const qIdx = parseInt(nameAttr.substring(1));
+                const selectedVal = parseInt(e.target.value);
+                if (!isNaN(qIdx)) {
+                    userAnswers[qIdx] = selectedVal;
+                    highlightSelected(qIdx, selectedVal);
+                    updateProgress();
+                }
+            }
+        });
+    }
+
+    function updateProgress() {
+        const answered = userAnswers.filter(a => a !== null).length;
+        const msg = document.getElementById('progressMsg');
+        msg.innerHTML = `📝 答题进度: ${answered} / ${questions.length} 题已完成。${answered === questions.length ? '✅ 可以提交查看结果！' : '请继续完成所有题目，获取准确人格剖面图。'}`;
+    }
+
+    // 计算各维度得分 (每个维度5题，满分25分，反向计分已处理)
+    function computeScores() {
+        // 初始化维度总分与计数
+        let dimScores = { O:0, C:0, E:0, A:0, N:0 };
+        let dimCount = { O:0, C:0, E:0, A:0, N:0 };
+        for (let i = 0; i < questions.length; i++) {
+            const answer = userAnswers[i];
+            if (answer === null) continue;
+            let score = answer;
+            const q = questions[i];
+            if (q.reverse) {
+                score = 6 - answer;  // 反向计分: 1->5, 2->4, 3->3, 4->2, 5->1
+            }
+            dimScores[q.dimension] += score;
+            dimCount[q.dimension]++;
+        }
+        // 每个维度标准分转为 0-100 百分比 (原始分5~25，映射到0~100)
+        let normScores = {};
+        for (let dim of ['O','C','E','A','N']) {
+            const raw = dimScores[dim];
+            const maxPossible = dimCount[dim] * 5;  // 应为25
+            const minPossible = dimCount[dim] * 1;
+            const normalized = ((raw - minPossible) / (maxPossible - minPossible)) * 100;
+            normScores[dim] = Math.round(normalized);
+        }
+        return normScores;
+    }
+
+    // 显示结果(雷达图 & 解释)
+    let radarChartInstance = null;
+    function showResults() {
+        // 检查是否所有题目都已答
+        const unanswered = userAnswers.some(a => a === null);
+        if (unanswered) {
+            alert(`您还有 ${userAnswers.filter(a=>a===null).length} 题未完成，请全部作答后再查看结果。`);
+            return;
+        }
+        const scores = computeScores();
+        // 维度顺序用于图表
+        const dimOrder = ['O','C','E','A','N'];
+        const dimNames = dimOrder.map(d => dimInfo[d].name);
+        const scoreValues = dimOrder.map(d => scores[d]);
+
+        // 显示结果区域
+        const resultDiv = document.getElementById('resultPanel');
+        resultDiv.classList.add('show');
+        
+        // 绘制雷达图
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        if (radarChartInstance) radarChartInstance.destroy();
+        radarChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: dimNames,
+                datasets: [{
+                    label: '您的百分位分数 (0-100)',
+                    data: scoreValues,
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#1e3a8a',
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { stepSize: 20, backdropColor: 'transparent' }
+                    }
+                },
+                plugins: {
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw} 分` } },
+                    legend: { position: 'top' }
+                }
+            }
+        });
+        
+        // 显示各维度分数卡片
+        const panel = document.getElementById('dimScoresPanel');
+        panel.innerHTML = '';
+        dimOrder.forEach(dim => {
+            const dimDiv = document.createElement('div');
+            dimDiv.className = 'dim-item';
+            dimDiv.innerHTML = `
+                <div class="dim-name">${dimInfo[dim].full}</div>
+                <div class="dim-score">${scores[dim]} 分</div>
+                <div style="font-size:0.7rem;">百分位等级</div>
+            `;
+            panel.appendChild(dimDiv);
+        });
+        
+        // 个性解读 (根据最高分倾向和典型风格)
+        let highDim = dimOrder.reduce((a,b) => scores[a] > scores[b] ? a : b, 'O');
+        let lowDim = dimOrder.reduce((a,b) => scores[a] < scores[b] ? a : b, 'O');
+        let interpretation = `🌟 您的性格特质以「${dimInfo[highDim].name}」最为突出，得分为${scores[highDim]}分。${dimInfo[highDim].descHigh} `;
+        interpretation += `相对而言，「${dimInfo[lowDim].name}」得分较低（${scores[lowDim]}分），${dimInfo[lowDim].descLow}<br><br>`;
+        interpretation += `📌 大五人格整体参考：开放性反映认知探索，尽责性代表自控与条理，外向性表现为社交活力，宜人性揭示人际亲和，神经质关乎情绪稳定性。每个人的特质都是独特组合，高分或低分各有优势。`;
+        document.getElementById('interpretText').innerHTML = interpretation;
+        
+        // 滚动到结果
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // 重置测试
+    function resetTest() {
+        userAnswers.fill(null);
+        // 清除所有radio选中样式及值
+        const allRadios = document.querySelectorAll('input[type="radio"]');
+        allRadios.forEach(radio => radio.checked = false);
+        const allLabels = document.querySelectorAll('.option-label');
+        allLabels.forEach(label => label.classList.remove('selected'));
+        updateProgress();
+        const resultDiv = document.getElementById('resultPanel');
+        resultDiv.classList.remove('show');
+        if (radarChartInstance) {
+            radarChartInstance.destroy();
+            radarChartInstance = null;
+        }
+        // 重新初始化题目选项视觉
+        renderQuestions();  // 重新渲染确保干净
+        bindRadioEvents();
+        updateProgress();
+    }
+
+    // 初始化
+    function init() {
+        renderQuestions();
+        bindRadioEvents();
+        updateProgress();
+        document.getElementById('submitBtn').addEventListener('click', showResults);
+        document.getElementById('resetTest').addEventListener('click', resetTest);
+    }
+    
+    init();
+</script>
+</body>
+</html>

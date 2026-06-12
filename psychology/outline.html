@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理学知识框架</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent-color: #4a9eff;
+            --accent-pink: #ff6b9d;
+            --accent-green: #00ff88;
+            --accent-yellow: #ffd93d;
+            --accent-purple: #a855f7;
+            --accent-orange: #ff9f43;
+            --accent-cyan: #00d4ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: #1f3460;
+            transform: translateY(-2px);
+        }
+
+        .zoom-info {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .mindmap-container {
+            overflow: auto;
+            max-height: calc(100vh - 160px);
+            background: rgba(22, 33, 62, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        #mindmap {
+            transition: transform 0.3s ease;
+            transform-origin: top left;
+        }
+
+        .mindmap {
+            max-width: 2000px;
+            margin: 0 auto;
+        }
+
+        .main-branch {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .branch {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .branch-line {
+            width: 30px;
+            height: 2px;
+            background: var(--accent-color);
+            margin-top: 12px;
+            flex-shrink: 0;
+        }
+
+        .node {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .node:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .main-node {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-pink));
+            border: none;
+            font-weight: 600;
+            min-width: 200px;
+        }
+
+        .main-node:hover {
+            transform: translateX(5px) scale(1.02);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+        }
+
+        .sub-branch {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .sub-node {
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            font-size: 0.95rem;
+        }
+
+        .sub-node:hover {
+            background: rgba(74, 158, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .leaf-node {
+            background: rgba(22, 33, 62, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 8px 12px;
+        }
+
+        .leaf-node:hover {
+            background: rgba(31, 52, 96, 0.8);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .branch-1 .main-node { background: linear-gradient(135deg, #4a9eff, #6366f1); }
+        .branch-2 .main-node { background: linear-gradient(135deg, #00ff88, #10b981); }
+        .branch-3 .main-node { background: linear-gradient(135deg, #ffd93d, #f59e0b); }
+        .branch-4 .main-node { background: linear-gradient(135deg, #ff6b9d, #ec4899); }
+        .branch-5 .main-node { background: linear-gradient(135deg, #a855f7, #8b5cf6); }
+        .branch-6 .main-node { background: linear-gradient(135deg, #00d4ff, #06b6d4); }
+        .branch-7 .main-node { background: linear-gradient(135deg, #ff9f43, #f97316); }
+        .branch-8 .main-node { background: linear-gradient(135deg, #10b981, #059669); }
+        .branch-9 .main-node { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .branch-10 .main-node { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .branch-11 .main-node { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+
+        .branch-1 .branch-line { background: #4a9eff; }
+        .branch-2 .branch-line { background: #00ff88; }
+        .branch-3 .branch-line { background: #ffd93d; }
+        .branch-4 .branch-line { background: #ff6b9d; }
+        .branch-5 .branch-line { background: #a855f7; }
+        .branch-6 .branch-line { background: #00d4ff; }
+        .branch-7 .branch-line { background: #ff9f43; }
+        .branch-8 .branch-line { background: #10b981; }
+        .branch-9 .branch-line { background: #ef4444; }
+        .branch-10 .branch-line { background: #8b5cf6; }
+        .branch-11 .branch-line { background: #06b6d4; }
+
+        .collapsed .sub-branch {
+            display: none;
+        }
+
+        .toggle-icon {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .mindmap-container {
+                padding: 15px;
+            }
+
+            .branch {
+                gap: 10px;
+            }
+
+            .branch-line {
+                width: 15px;
+            }
+
+            .node {
+                padding: 10px 12px;
+            }
+
+            .main-node {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>心理学知识框架</h1>
+        <p style="color: var(--text-secondary);">点击节点可展开/折叠子分支，使用按钮或鼠标滚轮缩放</p>
+    </header>
+
+    <div class="toolbar">
+        <button class="btn" onclick="zoomOut()">
+            <span>🔍-</span>
+            <span>缩小</span>
+        </button>
+        <div class="zoom-info" id="zoomLevel">100%</div>
+        <button class="btn" onclick="zoomIn()">
+            <span>🔍+</span>
+            <span>放大</span>
+        </button>
+        <button class="btn" onclick="resetZoom()">
+            <span>🔄</span>
+            <span>重置</span>
+        </button>
+        <button class="btn" onclick="toggleAll()">
+            <span>📋</span>
+            <span>全部展开</span>
+        </button>
+    </div>
+
+    <div class="mindmap-container" id="mindmapContainer">
+        <div id="mindmap" class="mindmap">
+            <div class="main-branch">
+                <div class="branch branch-1" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>一、心理学绪论
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">定义：研究心理现象及行为规律的科学</div>
+                        <div class="node sub-node">研究对象
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">个体心理：认知、情绪情感、意志、人格</div>
+                                <div class="node leaf-node">个体行为、意识与无意识</div>
+                                <div class="node leaf-node">社会心理</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">三大研究视角
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">科学视角：实证、可重复、证伪</div>
+                                <div class="node leaf-node">生物学视角</div>
+                                <div class="node leaf-node">社会文化视角</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">心理学发展历史
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">诞生标志：1879冯特建立首个心理学实验室</div>
+                                <div class="node leaf-node">七大经典流派：构造主义、机能主义、精神分析、行为主义、格式塔、人本主义、认知学派</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">常用研究方法：实验法、观察法、测验法、调查法、个案法、相关法</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-2" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>二、生理心理学（心理的生物学基础）
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">神经系统
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">中枢神经：脑（大脑分区、额叶/顶叶/枕叶/颞叶）、脊髓</div>
+                                <div class="node leaf-node">外周神经：躯体神经、自主神经（交感/副交感）</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">神经元结构：胞体、树突、轴突、突触传递</div>
+                        <div class="node sub-node">内分泌系统：激素对情绪、动机、发育调控</div>
+                        <div class="node sub-node">脑功能：单侧化、可塑性、镜像神经元</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-3" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>三、认知心理学（核心主干）
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">感觉：感官分类、绝对阈限、差别阈限、感觉适应、后像</div>
+                        <div class="node sub-node">知觉
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">知觉特性：整体性、选择性、恒常性、理解性</div>
+                                <div class="node leaf-node">空间知觉、时间知觉、运动知觉、错觉</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">注意
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">分类：无意/有意/有意后注意</div>
+                                <div class="node leaf-node">品质：广度、稳定性、分配、转移</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">记忆
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">三级记忆模型：瞬时→短时→长时记忆</div>
+                                <div class="node leaf-node">遗忘规律（艾宾浩斯）、遗忘原因、记忆策略</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">表象与想象：表象特征、再造想象、创造想象</div>
+                        <div class="node sub-node">思维
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">思维类型、概念形成、推理、问题解决（算法/启发式）</div>
+                                <div class="node leaf-node">定势、功能固着、原型启发</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">言语：语言表征、言语产生与理解</div>
+                        <div class="node sub-node">意识：睡眠、梦、催眠、白日梦、无意识加工</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-4" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>四、动机、情绪与意志
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">动机
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">需要层次理论（马斯洛）</div>
+                                <div class="node leaf-node">动机分类、动机冲突、内外动机、归因理论</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">情绪情感
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">情绪维度、基本情绪（喜怒哀惧）</div>
+                                <div class="node leaf-node">经典理论：詹姆斯-兰格、坎农-巴德、沙赫特双因素</div>
+                                <div class="node leaf-node">情绪调节、情商</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">意志
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">意志品质：自觉性、果断性、坚韧性、自制性</div>
+                                <div class="node leaf-node">意志行动阶段</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="branch branch-5" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>五、人格心理学
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">人格概述：独特性、稳定性、整体性、功能性</div>
+                        <div class="node sub-node">人格理论
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">精神分析：弗洛伊德本我自我超我；荣格集体潜意识</div>
+                                <div class="node leaf-node">特质理论：奥尔波特、卡特尔16PF、大五人格（OCEAN）</div>
+                                <div class="node leaf-node">人本主义：罗杰斯自我理论</div>
+                                <div class="node leaf-node">行为视角、认知视角</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">气质：胆汁质、多血质、粘液质、抑郁质</div>
+                        <div class="node sub-node">人格测验：MMPI、EPQ、16PF、大五量表</div>
+                        <div class="node sub-node">人格成因：遗传、家庭、环境、早期经验、文化</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-6" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>六、发展心理学（人一生身心发展）
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">研究年龄阶段：胎儿→婴幼儿→儿童→青少年→中年→老年</div>
+                        <div class="node sub-node">经典发展理论
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">皮亚杰认知发展四阶段</div>
+                                <div class="node leaf-node">埃里克森八阶段人格发展危机</div>
+                                <div class="node leaf-node">科尔伯格道德发展阶段</div>
+                                <div class="node leaf-node">维果茨基最近发展区</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">核心发展模块：动作、言语、认知、社会性、依恋（安斯沃斯）</div>
+                        <div class="node sub-node">关键期、敏感期、毕生发展观</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-7" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>七、社会心理学
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">社会认知
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">自我概念、自尊、归因偏差、刻板印象、首因/近因效应</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">社会关系：人际吸引、友情、爱情、依恋、利他行为、侵犯行为</div>
+                        <div class="node sub-node">社会影响：从众、服从、依从、社会助长/惰化、群体极化</div>
+                        <div class="node sub-node">态度：态度形成、态度转变、认知失调理论</div>
+                        <div class="node sub-node">群体心理、偏见与歧视</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-8" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>八、教育心理学
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">学习理论
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">行为主义：经典条件反射、操作性条件反射、班杜拉观察学习</div>
+                                <div class="node leaf-node">认知主义：布鲁纳、奥苏贝尔、加涅</div>
+                                <div class="node leaf-node">建构主义、人本主义学习观</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">学习心理：学习动机、迁移、学习策略</div>
+                        <div class="node sub-node">学生心理差异：智力差异、认知风格差异</div>
+                        <div class="node sub-node">课堂管理、教学设计、学业测评</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-9" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>九、异常心理学&临床心理学（心理咨询核心）
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">正常/异常心理划分标准</div>
+                        <div class="node sub-node">常见心理障碍
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">焦虑障碍、抑郁障碍、强迫障碍OCD、恐怖症</div>
+                                <div class="node leaf-node">进食障碍、睡眠障碍、人格障碍、精神分裂症</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">心理评估：心理诊断、量表评估</div>
+                        <div class="node sub-node">主流心理咨询疗法
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">精神分析疗法</div>
+                                <div class="node leaf-node">认知行为CBT（最常用）</div>
+                                <div class="node leaf-node">人本来访者中心疗法</div>
+                                <div class="node leaf-node">家庭治疗、正念疗法、艺术治疗</div>
+                            </div>
+                        </div>
+                        <div class="node sub-node">危机干预、伦理守则（保密、知情同意、多重关系）</div>
+                    </div>
+                </div>
+
+                <div class="branch branch-10" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>十、心理测量学
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">测验分类：智力、人格、成就、投射测验</div>
+                        <div class="node sub-node">测验四大指标：信度、效度、难度、区分度</div>
+                        <div class="node sub-node">常模、标准化、量表编制流程</div>
+                        <div class="node sub-node">常用经典量表
+                            <div class="sub-branch" style="padding-left: 20px;">
+                                <div class="node leaf-node">智力：韦氏智力量表、瑞文推理测验</div>
+                                <div class="node leaf-node">症状筛查：SCL-90、SDS抑郁、SAS焦虑</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="branch branch-11" onclick="toggleBranch(this)">
+                    <div class="branch-line"></div>
+                    <div class="node main-node">
+                        <span class="toggle-icon">▶</span>十一、其他分支应用心理学
+                    </div>
+                    <div class="sub-branch">
+                        <div class="node sub-node">工业&组织心理学：招聘、绩效考核、职场压力、团队建设</div>
+                        <div class="node sub-node">消费心理学：用户决策、广告心理、购买动机</div>
+                        <div class="node sub-node">司法心理学：测谎、证人证言、犯罪心理画像</div>
+                        <div class="node sub-node">运动心理学、健康心理学、艺术心理学</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mindmap = document.getElementById('mindmap');
+        const zoomLevelDisplay = document.getElementById('zoomLevel');
+        const toggleBtn = document.querySelector('.btn:last-child');
+        let currentZoom = 100;
+        const zoomStep = 10;
+        const minZoom = 20;
+        const maxZoom = 300;
+        let allExpanded = true;
+
+        function updateZoom() {
+            mindmap.style.transform = `scale(${currentZoom / 100})`;
+            zoomLevelDisplay.textContent = `${currentZoom}%`;
+        }
+
+        function zoomIn() {
+            if (currentZoom < maxZoom) {
+                currentZoom += zoomStep;
+                updateZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (currentZoom > minZoom) {
+                currentZoom -= zoomStep;
+                updateZoom();
+            }
+        }
+
+        function resetZoom() {
+            currentZoom = 100;
+            updateZoom();
+        }
+
+        function toggleBranch(branch) {
+            branch.classList.toggle('collapsed');
+        }
+
+        function toggleAll() {
+            const branches = document.querySelectorAll('.branch');
+            if (allExpanded) {
+                branches.forEach(branch => branch.classList.add('collapsed'));
+                toggleBtn.innerHTML = '<span>📋</span><span>全部展开</span>';
+            } else {
+                branches.forEach(branch => branch.classList.remove('collapsed'));
+                toggleBtn.innerHTML = '<span>📋</span><span>全部折叠</span>';
+            }
+            allExpanded = !allExpanded;
+        }
+
+        document.getElementById('mindmapContainer').addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0 && currentZoom < maxZoom) {
+                currentZoom += zoomStep;
+            } else if (e.deltaY > 0 && currentZoom > minZoom) {
+                currentZoom -= zoomStep;
+            }
+            updateZoom();
+        });
+    </script>
+</body>
+</html>

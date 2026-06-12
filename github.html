@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>GitHub 完全学习手册 | 全页面解析 + 二级菜单详解</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f4f6f9;
+            color: #1f2d3d;
+        }
+
+        /* 布局：左侧固定导航 + 右侧滚动内容 */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 左侧导航 (侧边栏) */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 10;
+            padding: 2rem 0 2rem 1rem;
+            box-shadow: 0 0 8px rgba(0,0,0,0.02);
+        }
+
+        .sidebar-header {
+            padding: 0 1rem 1rem 0.5rem;
+            border-bottom: 1px solid #edf2f7;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0969da, #1b7e43);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .nav-tree {
+            list-style: none;
+            padding-left: 0;
+        }
+        .nav-tree li {
+            margin: 0.2rem 0;
+        }
+        .nav-tree .nav-main {
+            font-weight: 700;
+            margin-top: 0.8rem;
+            margin-bottom: 0.3rem;
+            padding: 0.4rem 0.5rem;
+            background: none;
+            color: #1f2d3d;
+            font-size: 0.9rem;
+            letter-spacing: -0.2px;
+        }
+        .nav-tree .nav-sub {
+            padding-left: 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        .nav-tree a {
+            display: block;
+            padding: 0.35rem 0.5rem;
+            text-decoration: none;
+            color: #4a5b6e;
+            border-radius: 8px;
+            transition: all 0.15s;
+        }
+        .nav-tree a:hover {
+            background: #f0f4f9;
+            color: #0969da;
+        }
+        .nav-tree .active-link {
+            background: #eef5ff;
+            color: #0969da;
+            font-weight: 500;
+            border-left: 3px solid #0969da;
+        }
+
+        /* 右侧主要内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 2rem 3rem;
+            max-width: calc(100% - 280px);
+        }
+
+        /* 卡片样式 (同之前类似但微调) */
+        .section-card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0,0,0,0.1);
+            margin-bottom: 2.2rem;
+            overflow: hidden;
+            scroll-margin-top: 20px;
+        }
+        .card-inner {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            padding: 1.8rem 2rem;
+        }
+        .desc-area {
+            flex: 1.2;
+            min-width: 250px;
+        }
+        .mock-area {
+            flex: 0.9;
+            min-width: 260px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08), 0 0 0 1px #eef2f6;
+            transition: 0.1s;
+        }
+        .mockup-window {
+            border-radius: 18px;
+            overflow: hidden;
+        }
+        .browser-bar {
+            background: #f1f3f5;
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #e5e9f0;
+        }
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #dfe3e8;
+        }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        .mock-url {
+            background: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            margin-left: 8px;
+            flex: 1;
+            border: 1px solid #e2e8f0;
+        }
+        .mock-content {
+            padding: 1rem;
+        }
+        .section-title-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.55rem;
+            font-weight: 650;
+            margin-bottom: 1rem;
+            color: #0e2a3b;
+        }
+        .section-title-icon i {
+            color: #0969da;
+            font-size: 1.6rem;
+        }
+        .desc-text {
+            color: #2c3e4e;
+            margin: 0.7rem 0;
+            line-height: 1.5;
+        }
+        .tip-note {
+            background: #f0f7ff;
+            border-left: 3px solid #0969da;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .gh-badge {
+            background: #eef2f5;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        hr { margin: 0.8rem 0; border: 0; border-top: 1px solid #edf2f7; }
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+            color: #5e6f8d;
+        }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; max-width: 100%; padding: 1rem; }
+            .card-inner { flex-direction: column; }
+        }
+        h3 { font-size: 1.2rem; margin: 0.5rem 0; }
+        .mock-btn {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fab fa-github"></i> GitHub 手册</h2>
+            <p style="font-size: 0.7rem; color:#5e6f8d;">全菜单二级页面详解</p>
+        </div>
+        <ul class="nav-tree" id="navTree">
+            <!-- 导航由 js 动态生成，保证结构与内容同步，但为了方便先构建静态结构 + JS 动态高亮 -->
+        </ul>
+    </aside>
+    <main class="main-content" id="mainContent">
+        <!-- 所有卡片将会动态生成，确保内容与导航匹配，为便于维护，用js动态渲染所有板块（基于数据结构） -->
+    </main>
+</div>
+
+<script>
+    // ======================= 定义所有页面数据 (一级菜单 + 二级子页面) =======================
+    const sectionsData = [
+        { id: "code-main", menu: "Code", sub: null, title: "仓库主页 (Code) · 代码与文件管理", icon: "fa-code", 
+          desc: "仓库首页展示目录结构、README、分支切换、发布版本。可通过“Code”按钮克隆仓库，查看语言统计。",
+          mock: `<div class="mock-content"><div style="display:flex; justify-content:space-between"><span><i class="fab fa-github"></i> <strong>Cloudside-Cat</strong></span><span><i class="far fa-star"></i> Star</span></div>
+          <div style="background:#f6f8fa; border-radius:12px; padding:8px; margin:8px 0;"><span>main ▼</span> <span style="float:right">📁 3 files</span></div>
+          <div><i class="fas fa-file"></i> README.md  &nbsp; <i class="fas fa-folder"></i> src/</div>
+          <div class="mock-btn" style="margin-top:10px"><i class="fas fa-code"></i> 克隆 (HTTPS)</div></div>` },
+        { id: "issues-main", menu: "Issues", sub: null, title: "Issues · 问题追踪与任务管理", icon: "fa-exclamation-circle",
+          desc: "记录Bug、功能请求，支持标签(Labels)、指派(Assignees)、里程碑(Milestones)。可通过 @mention 协作，并用关键字关闭Issues。",
+          mock: `<div class="mock-content"><div style="display:flex; justify-content:space-between"><span><strong>Issues</strong></span><span class="mock-btn" style="background:#2da44e; color:white;">New issue</span></div>
+          <div style="border:1px solid #e9ecef; border-radius:12px; margin:10px 0; padding:8px;"><i class="fas fa-circle" style="color:#1f883d;"></i> <strong>优化导航菜单</strong> #3 <span class="gh-badge">enhancement</span></div>
+          <div class="tip-note" style="margin:0">🔍 过滤器: is:issue is:open label:bug</div></div>` },
+        { id: "pulls-main", menu: "Pull requests", sub: null, title: "Pull requests · 代码审查与合并", icon: "fa-code-pull-request",
+          desc: "开发者提交PR请求合并分支，可进行逐行评论、要求审查者，并通过分支策略合并。支持Draft PR。",
+          mock: `<div class="mock-content"><div><i class="fas fa-git-pull-request"></i> <strong>Pull requests</strong></div>
+          <div style="background:#f6f8fa; border-radius:12px; margin:12px 0; padding:10px;"><strong>✨ 新功能卡片视图</strong> #5 · feature/card → main <span class="gh-badge">Open</span></div>
+          <div>✅ 已合并: 增加响应式布局 #2</div></div>` },
+        { id: "actions-main", menu: "Actions", sub: null, title: "Actions · 自动化工作流 (CI/CD)", icon: "fa-play-circle",
+          desc: "通过定义YAML文件，在push、PR时自动运行测试、部署。提供预置模板，并可视化执行日志。",
+          mock: `<div class="mock-content"><i class="fas fa-play-circle"></i> <strong>Actions</strong> 所有workflow<br>
+          <div style="background:#eef2ff; padding:8px; border-radius:12px; margin:8px 0;"><i class="fas fa-check-circle" style="color:#2da44e;"></i> CI - Lint & Test (main) #13 成功</div>
+          <div><i class="fas fa-clock"></i> Pages 部署 进行中</div></div>` },
+        { id: "projects-main", menu: "Projects", sub: null, title: "Projects · 敏捷看板 (项目管理)", icon: "fa-tasks",
+          desc: "创建看板管理Issues/PR，列如待办、进行中、已完成，支持自动化流程，跨仓库协作。",
+          mock: `<div class="mock-content"><i class="fas fa-chalkboard"></i> <strong>项目看板</strong> &nbsp; <span class="mock-btn">新建项目</span>
+          <div style="display:flex; gap:8px; margin-top:12px;"><div style="flex:1; border:1px solid #e2e8f0; border-radius:12px; padding:6px;"><strong>待办</strong><hr>📌 移动端适配</div><div style="flex:1; border:1px solid #e2e8f0; border-radius:12px;"><strong>进行中</strong><hr>⚙️ 性能优化</div></div></div>` },
+        { id: "security-main", menu: "Security", sub: null, title: "Security · 安全策略与漏洞检测", icon: "fa-shield-alt",
+          desc: "展示Dependabot警报、代码扫描结果，可配置SECURITY.md报告漏洞，支持私密安全通告。",
+          mock: `<div class="mock-content"><i class="fas fa-shield-virus"></i> <strong>安全概览</strong><div style="margin:8px 0;">⚠️ 无安全策略 (建议创建SECURITY.md)<br>🔔 Dependabot: 0 个漏洞</div>
+          <div class="mock-btn">配置安全策略</div></div>` },
+        { id: "wiki-main", menu: "Wiki", sub: null, title: "Wiki · 项目文档与知识库", icon: "fa-book-open",
+          desc: "独立的文档系统，支持Markdown编写，用于详细说明、指南、设计文档，协作者共同维护。",
+          mock: `<div class="mock-content"><i class="fas fa-book"></i> Wiki 主页<br><div style="background:#f8f9fa; border-radius:12px; padding:8px; margin-top:8px;">📄 首页 – 安装指南<br>📄 贡献规范<br>📄 API 参考</div></div>` },
+        { id: "discussions-main", menu: "Discussions", sub: null, title: "Discussions · 社区论坛与问答", icon: "fa-comments",
+          desc: "开启类似论坛的交流区，用于公告、想法、问答，增强开源社区互动。支持置顶及分类。",
+          mock: `<div class="mock-content"><i class="fas fa-comments"></i> <strong>Discussions</strong><div>📢 公告: 版本发布计划<br>💡 想法: 新功能建议<br>❓ Q&A 问答专区</div></div>` },
+        // ===================== Insights 二级页面 =====================
+        { id: "insights-traffic", menu: "Insights", sub: "Traffic", title: "Insights → Traffic (流量分析)", icon: "fa-chart-line",
+          desc: "查看仓库访问量统计（访客数、克隆数），来源于Referrer与热门路径，分析项目受欢迎程度。",
+          mock: `<div class="mock-content"><i class="fas fa-chart-simple"></i> <strong>流量统计 (过去14天)</strong><div>👥 访客: 124 次 &nbsp; 📥 克隆: 56 次</div><div style="background:#eef2f5; height:40px; border-radius:12px; margin-top:8px; display:flex; align-items:center; justify-content:center;">📊 折线图模拟</div></div>` },
+        { id: "insights-commits", menu: "Insights", sub: "Commits", title: "Insights → Commits (提交频率)", icon: "fa-chart-simple",
+          desc: "展示项目提交活动图表，按周/月展示每个贡献者的提交数量，掌握开发节奏。",
+          mock: `<div class="mock-content"><i class="fas fa-chart-column"></i> <strong>提交活动</strong><div>📅 最近4周提交趋势: ██████░░ 32 commits</div><div>主要贡献者: yanxi-yy (22) · others (10)</div></div>` },
+        { id: "insights-contributors", menu: "Insights", sub: "Contributors", title: "Insights → Contributors (贡献者)", icon: "fa-users",
+          desc: "列出所有贡献者及其提交数量，并可查看每个贡献者的活跃度排序。",
+          mock: `<div class="mock-content"><i class="fas fa-user-friends"></i> <strong>贡献者排名</strong><div>1. yanxi-yy  132 commits<br>2. collaboratorA  48 commits<br>3. new-dev  12 commits</div></div>` },
+        { id: "insights-dependency", menu: "Insights", sub: "Dependency graph", title: "Insights → Dependency graph (依赖图)", icon: "fa-diagram-project",
+          desc: "分析项目依赖关系，检测安全漏洞，并展示依赖清单（package.json, requirements.txt等）。",
+          mock: `<div class="mock-content"><i class="fas fa-share-alt"></i> 依赖关系图<br><div>📦 依赖: 12 个库 (axios, react, ...)   ⚠️ 高危: 0</div><div class="mock-btn">查看依赖项清单</div></div>` },
+        { id: "insights-forks", menu: "Insights", sub: "Forks", title: "Insights → Forks (复刻网络)", icon: "fa-code-branch",
+          desc: "显示派生仓库的网络关系及活跃派生列表，了解社区衍生情况。",
+          mock: `<div class="mock-content"><i class="fas fa-network-wired"></i> Fork 网络<br><div>活跃派生: 3 个仓库, 最新同步记录...</div></div>` },
+        // ===================== Settings 二级页面 =====================
+        { id: "settings-general", menu: "Settings", sub: "General", title: "Settings → General (常规设置)", icon: "fa-cog",
+          desc: "修改仓库名称、描述、可见性（公开/私有）、删除仓库、转移所有权以及功能开关。",
+          mock: `<div class="mock-content"><i class="fas fa-gear"></i> 常规设置<br><div>仓库名称: Cloudside-Cat<br>可见性: 🔓 Public &nbsp; <span class="mock-btn">更改可见性</span></div><div>⚠️ 删除仓库区域</div></div>` },
+        { id: "settings-branches", menu: "Settings", sub: "Branches", title: "Settings → Branches (分支保护)", icon: "fa-code-branch",
+          desc: "配置分支保护规则：要求PR审查、状态检查、禁止强制推送，保障主分支稳定性。",
+          mock: `<div class="mock-content"><i class="fas fa-shield"></i> 分支规则<br><div>✅ main 分支保护: 要求线性历史</div><div class="mock-btn">添加规则</div></div>` },
+        { id: "settings-webhooks", menu: "Settings", sub: "Webhooks", title: "Settings → Webhooks", icon: "fa-bolt",
+          desc: "设置事件回调URL，当push、PR、issues等事件发生时自动发送HTTP请求，用于集成CI/CD或聊天机器人。",
+          mock: `<div class="mock-content"><i class="fas fa-webhook"></i> Webhooks<br><div>📡 暂无Webhook，点击添加URL端点</div><div class="mock-btn">新增 Webhook</div></div>` },
+        { id: "settings-pages", menu: "Settings", sub: "Pages", title: "Settings → Pages (GitHub Pages托管)", icon: "fa-globe",
+          desc: "从分支或文件夹构建静态网站，支持自定义域名和强制HTTPS，发布项目文档或博客。",
+          mock: `<div class="mock-content"><strong>GitHub Pages</strong> <div>Source: Deploy from a branch (main / root)</div><div class="mock-btn">保存并发布</div><div>🔗 站点: https://yanxi-yy.github.io/Cloudside-Cat/</div></div>` },
+        { id: "settings-secrets", menu: "Settings", sub: "Secrets and variables", title: "Settings → Secrets and variables", icon: "fa-key",
+          desc: "存储Actions所需敏感信息（令牌、密钥），环境变量，以密文形式展示，保护CI/CD流程。",
+          mock: `<div class="mock-content"><i class="fas fa-lock"></i> Secrets<br><div>🔐 仓库密钥: 2个已配置 (NPM_TOKEN, DEPLOY_KEY)</div><div class="mock-btn">New repository secret</div></div>` },
+        { id: "settings-actions", menu: "Settings", sub: "Actions (general)", title: "Settings → Actions (权限/缓存)", icon: "fa-play-circle",
+          desc: "配置Actions的访问权限、workflow权限、缓存管理以及runner组。",
+          mock: `<div class="mock-content">⚙️ Actions 常规设置<br>✅ 允许所有本地Action<br>🗑️ 清理缓存策略</div>` },
+        // Pulse 原本已有，但Pulse属于Insights的子页面，单独作为一个卡片
+        { id: "pulse-main", menu: "Pulse", sub: null, title: "Pulse · 仓库活跃摘要 (Insights内)", icon: "fa-chart-simple",
+          desc: "Pulse展示最近一周的活动摘要：合并的PR、关闭的Issue、提交数量及贡献者活跃度。",
+          mock: `<div class="mock-content"><i class="fas fa-waveform"></i> 活跃脉搏 (7天)<div>✅ 5次提交 &nbsp; 🔁 2个PR合并 &nbsp; 📌 3 Issues关闭</div><div>👤 贡献者: yanxi-yy (主要活跃)</div></div>` }
+    ];
+
+    // 构建左侧导航树 (根据菜单分组)
+    function buildNavigation() {
+        const navContainer = document.getElementById('navTree');
+        const grouped = {};
+
+        sectionsData.forEach(section => {
+            const mainMenu = section.menu;
+            if (!grouped[mainMenu]) grouped[mainMenu] = [];
+            grouped[mainMenu].push(section);
+        });
+
+        let html = '';
+        // 定义顺序: 一级菜单顺序
+        const order = ['Code', 'Issues', 'Pull requests', 'Actions', 'Projects', 'Security', 'Wiki', 'Discussions', 'Insights', 'Pulse', 'Settings'];
+        for (let main of order) {
+            if (!grouped[main]) continue;
+            // 是否是特殊处理：Insights 和 Settings 有多个子页面且需要显示二级导航
+            if (main === 'Insights') {
+                html += `<li><div class="nav-main"><i class="fas fa-chart-line"></i> Insights</div><ul class="nav-sub" style="list-style:none;">`;
+                grouped[main].forEach(sub => {
+                    html += `<li><a href="#${sub.id}" data-id="${sub.id}">📊 ${sub.sub || sub.title}</a></li>`;
+                });
+                html += `</ul></li>`;
+            } else if (main === 'Settings') {
+                html += `<li><div class="nav-main"><i class="fas fa-cog"></i> Settings</div><ul class="nav-sub" style="list-style:none;">`;
+                grouped[main].forEach(sub => {
+                    let displayName = sub.sub ? sub.sub : sub.title.split('·')[0];
+                    html += `<li><a href="#${sub.id}" data-id="${sub.id}">⚙️ ${displayName}</a></li>`;
+                });
+                html += `</ul></li>`;
+            } else {
+                // 普通一级菜单可能有多个二级？目前只有单一的 main 卡片
+                grouped[main].forEach(sec => {
+                    let iconMap = { Code:'📁', Issues:'🐛', 'Pull requests':'🔀', Actions:'⚙️', Projects:'📊', Security:'🔒', Wiki:'📘', Discussions:'💬', Pulse:'📈' };
+                    html += `<li><div class="nav-main"><i class="fas ${sec.icon}"></i> ${sec.menu}</div><ul class="nav-sub"><li><a href="#${sec.id}" data-id="${sec.id}">${iconMap[sec.menu] || '📄'} ${sec.title.split('·')[0]}</a></li></ul></li>`;
+                });
+            }
+        }
+        navContainer.innerHTML = html;
+
+        // 高亮当前滚动位置
+        const sections = document.querySelectorAll('.section-card');
+        const navLinks = document.querySelectorAll('.nav-tree a');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+                const href = link.getAttribute('href');
+                if (href && href.substring(1) === current) {
+                    link.classList.add('active-link');
+                }
+            });
+        });
+    }
+
+    // 渲染所有卡片
+    function renderCards() {
+        const container = document.getElementById('mainContent');
+        let cardsHtml = '';
+        sectionsData.forEach(section => {
+            // 构建标题显示，如果是有二级菜单，展示前缀
+            let headerTitle = section.title;
+            if (section.sub && section.menu === 'Insights') headerTitle = `Insights / ${section.sub} – ${headerTitle}`;
+            if (section.sub && section.menu === 'Settings') headerTitle = `Settings / ${section.sub} – ${headerTitle}`;
+            cardsHtml += `
+                <div class="section-card" id="${section.id}">
+                    <div class="card-inner">
+                        <div class="desc-area">
+                            <div class="section-title-icon">
+                                <i class="fas ${section.icon}"></i>
+                                <span>${headerTitle}</span>
+                            </div>
+                            <div class="desc-text">${section.desc}</div>
+                            <div class="tip-note"><i class="fas fa-info-circle"></i> 中文菜单对应：${section.menu}${section.sub ? ' → ' + section.sub : ''}，此页面核心用途如上。</div>
+                        </div>
+                        <div class="mock-area">
+                            <div class="mockup-window">
+                                <div class="browser-bar">
+                                    <div class="dots"><div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div></div>
+                                    <div class="mock-url">github.com/yanxi-yy/Cloudside-Cat/${section.menu.toLowerCase()}</div>
+                                </div>
+                                ${section.mock}
+                                <div style="font-size:0.65rem; text-align:center; padding:6px; border-top:1px solid #edf2f7;">📸 模拟界面 · GitHub 风格示意</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = cardsHtml;
+        // 平滑锚点
+        document.querySelectorAll('.nav-tree a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    }
+
+    // 初始化
+    function init() {
+        renderCards();
+        buildNavigation();
+    }
+    init();
+</script>
+<!-- 额外添加一个简易说明footer -->
+<div style="text-align: center; margin-top: 2rem; padding: 1rem; font-size: 0.8rem; color: #5e6f8d; border-top: 1px solid #e2e8f0; margin-left: 280px;">
+    <i class="fab fa-github"></i> GitHub 学习手册全览 | 覆盖所有一级菜单及二级子页面 (Insights / Settings 全解析) | 点击左侧导航跳转
+</div>
+</body>
+</html>
